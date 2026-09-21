@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx Cart</title>
+
+<style>
+body{font-family:'Segoe UI';background:#f4f4f4}
+
+/* NAVBAR */
+.navbar{
+background:black;color:white;padding:15px;
+display:flex;justify-content:space-between;
+}
+
+.menu a{color:white;margin-left:15px;text-decoration:none}
+
+/* CONTAINER */
+.container{
+max-width:800px;margin:30px auto;
+background:white;padding:20px;border-radius:10px;
+}
+
+/* ITEM */
+.item{
+display:flex;justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #ddd;
+padding:10px 0;
+}
+
+button{
+padding:8px 12px;
+cursor:pointer;
+margin:3px;
+}
+
+.checkout-btn{
+display:block;
+width:100%;
+margin-top:20px;
+padding:12px;
+background:#ff4b2b;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+<div>DERMALYX</div>
+<div class="menu">
+<a href="home.html">Home</a>
+<a href="product.html">Products</a>
+<a href="cart.html">Cart</a>
+</div>
+</header>
+
+<div class="container">
+
+<h2>Your Cart</h2>
+
+<div id="cartItems"></div>
+
+<h3 id="total">Total: ₹0</h3>
+
+<button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+
+</div>
+
+<script>
+
+// ================= USER CHECK =================
+const user = JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+  alert("Please login first ❌");
+  window.location.href = "login.html";
+}
+
+// ================= LOAD CART =================
+async function loadCart(){
+
+try{
+
+const res = await fetch(`http://localhost:3000/cart/${user._id}`);
+const cart = await res.json();
+
+let html = "";
+let total = 0;
+
+if(cart.length === 0){
+  document.getElementById("cartItems").innerHTML = "<p>Cart is empty 🛒</p>";
+  document.getElementById("total").innerText = "Total: ₹0";
+  return;
+}
+
+cart.forEach(item => {
+
+total += item.price * item.quantity;
+
+html += `
+<div class="item">
+  <div>
+    <h3>${item.name}</h3>
+    <p>₹${item.price}</p>
+    <p>Qty: ${item.quantity}</p>
+  </div>
+
+  <div>
+    <button onclick="updateQty('${item.product_id}', ${item.quantity - 1})">-</button>
+    <button onclick="updateQty('${item.product_id}', ${item.quantity + 1})">+</button>
+    <button onclick="removeItem('${item.product_id}')">Delete</button>
+  </div>
+</div>
+`;
+
+});
+
+document.getElementById("cartItems").innerHTML = html;
+document.getElementById("total").innerText = "Total: ₹" + total;
+
+}catch(err){
+console.log(err);
+alert("Error loading cart ❌");
+}
+
+}
+
+// ================= UPDATE QTY =================
+async function updateQty(product_id, quantity){
+
+if(quantity < 1) return;
+
+try{
+
+await fetch("http://localhost:3000/cart", {
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body: JSON.stringify({
+user_id: user._id,
+product_id,
+quantity
+})
+});
+
+loadCart();
+
+}catch(err){
+alert("Error updating ❌");
+}
+
+}
+
+// ================= DELETE ITEM =================
+// ================= LOAD CART =================
+function loadCart() {
+    // Get data from localStorage instead of Fetch
+    const cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+    let html = "";
+    let total = 0;
+
+    const cartContainer = document.getElementById("cartItems");
+
+    if (cart.length === 0) {
+        cartContainer.innerHTML = `
+            <div style="text-align:center; padding:40px;">
+                <p style="font-size:20px;">Cart is empty 🛒</p>
+                <a href="scrub.html" style="color:#ff4b2b;">Go Shopping</a>
+            </div>`;
+        document.getElementById("total").innerText = "Total: ₹0";
+        return;
+    }
+
+    cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        html += `
+        <div class="item">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <img src="${item.img}" style="width:60px; height:60px; border-radius:5px; object-fit:cover;">
+                <div>
+                    <h3 style="font-size:16px;">${item.name}</h3>
+                    <p style="color:#666;">₹${item.price} x ${item.quantity}</p>
+                    <p><b>₹${itemTotal}</b></p>
+                </div>
+            </div>
+
+            <div>
+                <button onclick="updateQty(${index}, -1)">-</button>
+                <span style="padding:0 10px;">${item.quantity}</span>
+                <button onclick="updateQty(${index}, 1)">+</button>
+                <button onclick="removeItem(${index})" style="color:red; border:none; background:none; margin-left:10px;">Delete</button>
+            </div>
+        </div>
+        `;
+    });
+
+    cartContainer.innerHTML = html;
+    document.getElementById("total").innerText = "Total: ₹" + total;
+}
+
+// ================= UPDATE QTY =================
+function updateQty(index, change) {
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart"));
+    
+    cart[index].quantity += change;
+
+    if (cart[index].quantity < 1) {
+        removeItem(index);
+    } else {
+        localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+        loadCart();
+    }
+}
+
+// ================= DELETE ITEM =================
+function removeItem(index) {
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart"));
+    cart.splice(index, 1); // Remove the item
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+    loadCart();
+}
+
+// ================= CHECKOUT =================
+function checkout() {
+    const cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+    if(cart.length === 0) {
+        alert("Your cart is empty! 🛒");
+        return;
+    }
+
+    // Calculate total to send to payment page
+    let subtotal = 0;
+    cart.forEach(item => subtotal += (item.price * item.quantity));
+    
+    // Store values for pay2.html
+    localStorage.setItem("productPrice", subtotal);
+    localStorage.setItem("deliveryPrice", 0); // Setting delivery as 0 as per your UI
+    localStorage.setItem("totalAmount", subtotal);
+
+    window.location.href = "pay2.html";
+}
+
+// Initial Load
+loadCart();
+// ================= LOAD ON START =================
+loadCart();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dermalyx Premium Login</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+/* SAME CSS (no change) */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+background:black;
+}
+
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:url("background.png") center/cover no-repeat;
+filter:blur(8px) brightness(0.6);
+z-index:-2;
+}
+
+.container{
+width:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.card{
+width:420px;
+padding:40px;
+border-radius:20px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(25px);
+box-shadow:0 10px 50px rgba(0,0,0,0.5);
+}
+
+h1{
+text-align:center;
+color:white;
+margin-bottom:30px;
+}
+
+.input-group{
+position:relative;
+margin-bottom:25px;
+}
+
+.input-group input{
+width:100%;
+padding:14px 45px;
+border:none;
+border-radius:10px;
+outline:none;
+background:white;
+}
+
+.input-group i{
+position:absolute;
+left:15px;
+top:50%;
+transform:translateY(-50%);
+}
+
+.toggle{
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:18px;
+color:white;
+cursor:pointer;
+background:linear-gradient(270deg,#2a8f94,#45c7cc,#2a8f94);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Login</h1>
+
+<form id="loginForm">
+
+<div class="input-group">
+<input type="email" id="email" placeholder="Email" required>
+<i class="fa fa-envelope"></i>
+</div>
+
+<div class="input-group">
+<input type="password" id="password" placeholder="Password" required>
+<i class="fa fa-lock"></i>
+
+<span class="toggle" onclick="togglePassword()">
+<i id="eye" class="fa fa-eye"></i>
+</span>
+
+</div>
+
+<button type="submit">Log In</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+// SAFE USER FETCH
+const user = JSON.parse(localStorage.getItem("user"));
+
+if(user){
+  console.log("User ID:", user._id);
+  console.log("User Email:", user.email);
+}
+
+/* PASSWORD TOGGLE */
+function togglePassword(){
+let pass=document.getElementById("password");
+let eye=document.getElementById("eye");
+
+if(pass.type==="password"){
+pass.type="text";
+eye.classList.replace("fa-eye","fa-eye-slash");
+}else{
+pass.type="password";
+eye.classList.replace("fa-eye-slash","fa-eye");
+}
+}
+
+/* LOGIN FUNCTION */
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+try{
+
+const res = await fetch("http://localhost:3000/login", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({ email, password })
+});
+
+// check response
+if(!res.ok){
+  throw new Error("Invalid login");
+}
+
+const data = await res.json();
+
+alert("Login Successful ✅");
+
+// store user (MongoDB gives _id)
+localStorage.setItem("user", JSON.stringify(data.user));
+
+window.location.href = "home.html";
+
+}catch(err){
+alert("Invalid Email or Password ❌");
+console.log(err);
+}
+
+});
+</script>
+</body>
+</html>

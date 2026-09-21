@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx | Cleanser Details</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f6f6f6;color:#222;}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo{font-size:22px;font-weight:bold;letter-spacing:2px;}
+
+.product-container{
+display:flex;
+gap:60px;
+padding:60px;
+align-items:flex-start;
+}
+
+/* IMAGE */
+.image-section{flex:1;}
+.main-img{
+width:100%;
+max-width:450px;
+border-radius:10px;
+}
+.thumbnail-container{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+.thumbnail-container img{
+width:70px;
+height:70px;
+object-fit:cover;
+cursor:pointer;
+border-radius:6px;
+border:2px solid transparent;
+}
+.thumbnail-container img:hover{
+border:2px solid black;
+}
+
+/* INFO */
+.info-section{flex:1;}
+.category{
+font-size:12px;
+letter-spacing:2px;
+color:#777;
+margin-bottom:10px;
+}
+h1{font-size:32px;margin-bottom:10px;}
+.price{font-size:24px;font-weight:bold;margin:10px 0;}
+.tagline{color:#666;margin-bottom:10px;}
+.rating{color:#ff9900;margin-bottom:15px;}
+
+.quantity{
+display:flex;
+gap:15px;
+align-items:center;
+margin-bottom:20px;
+}
+.quantity button{
+width:35px;height:35px;border:none;background:#ddd;font-size:18px;cursor:pointer;
+}
+
+.add-btn{
+width:100%;
+padding:15px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+/* REASONS */
+.reasons ul{padding-left:18px;margin:10px 0;}
+.reasons li{margin-bottom:8px;color:#555;}
+
+/* ACCORDION */
+.accordion-item{border-top:1px solid #ddd;}
+.accordion-header{
+padding:15px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+}
+.accordion-content{
+display:none;
+padding:15px;
+color:#555;
+}
+
+@media(max-width:900px){
+.product-container{flex-direction:column;padding:30px;}
+.main-img{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo">DERMALYX</div>
+</header>
+
+<section class="product-container">
+
+<div class="image-section">
+<img id="mainImage" class="main-img">
+<div class="thumbnail-container" id="thumbnails"></div>
+</div>
+
+<div class="info-section">
+<div class="category" id="category"></div>
+<h1 id="productName"></h1>
+<div class="tagline" id="tagline"></div>
+<div class="price" id="productPrice"></div>
+<div class="rating">★★★★★ 4.9 (88 Reviews)</div>
+
+<div class="quantity">
+<button onclick="decrease()">-</button>
+<span id="qty">1</span>
+<button onclick="increase()">+</button>
+</div>
+
+<button class="add-btn" onclick="addToCart()">ADD TO CART</button>
+
+<div class="reasons">
+<h3>REASONS TO LOVE:</h3>
+<ul id="reasonsList"></ul>
+</div>
+
+<div class="accordion" id="accordionSection"></div>
+</div>
+</section>
+
+<script>
+
+/* PRODUCT DATABASE */
+const products = {
+
+1:{
+category:"BRIGHTENING CLEANSER",
+name:"Chia Seeds Face Cleanser",
+tagline:"Boost glow & reduce dark spots",
+price:"₹499",
+images:["cleanser1.jpg"],
+reasons:[
+"Superfood Infusion: Leverages the nutrient-rich power of Chia Seeds to feed your skin essential fatty acids."
+,"Deep Cleansing: Reaches deep into the pores to lift away stubborn impurities without causing irritation.",
+"Barrier Support: Formulated with Ceramides to strengthen and protect your skin’s natural moisture barrier.",
+"Universal Formula: Specifically designed to be effective and gentle for all skin types."
+],
+description:"The Dermalyx Chia Seeds Face Cleanser is a nourishing powerhouse designed to provide a deep, restorative clean. By combining the antioxidant properties of Chia Seeds with the structural support of Ceramides, this cleanser does more than just wash away the day—it actively works to replenish your skin. Its creamy, soothing texture ensures that your face feels incredibly soft, hydrated, and resilient after every wash.",
+benefits:[
+"Intense Nourishment: Provides a rich source of Omega-3s to keep skin looking plump and healthy.",
+"Soothing Relief: Immediately calms reactive or sensitive skin during the cleansing process.",
+"Moisture Retention:Helps the skin hold onto water, preventing the tight feeling often associated with deep cleansers.",
+"Pollution Defense: Creates a clean slate by removing environmental pollutants that can lead to premature aging"
+],
+usage:[
+"1. Dampen: Start by wetting your face with lukewarm water.",
+"2. Dispense: Place one to two pumps of the cleanser into your palms.",
+"3. Lather & Massage: Work into a light lather and massage gently over the face and neck in upward motions.",
+"4. Rinse: Rinse thoroughly with water until the skin feels clean and smooth.",  
+"5. Routine: Use both morning and night as the first step in your skincare ritual."
+],
+
+},
+
+2:{
+category:"HYDRATION CLEANER",
+name:"Honey Face Cleanser*",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["cleanser2.jpg"],
+reasons:[
+"Antioxidant Rich: Formulated with Manuka Honey to provide powerful antioxidant protection against environmental stressors.",
+"Deep Hydration: Utilizes Hyaluronic Acid to draw moisture into the skin for a plump, dewy look.",
+"Soothing Properties: Propolis Extract helps to calm redness and support skin healing.",
+"Nutrient Dense: Packed with vitamins and minerals that nourish the skin while you cleanse."
+],
+description:"The **Dermalyx Honey Face Cleanser** is a luxurious, gold-toned formula designed to nourish and hydrate the skin. This cleanser combines the healing powers of Manuka Honey and Propolis with the intensive moisture of Hyaluronic Acid. Its gentle, non-stripping texture effectively removes impurities while leaving the skin feeling incredibly soft and replenished.",
+benefits:[
+"Restorative Moisture: Actively restores the skin's moisture balance during the cleansing process.",
+"Calming Effect: Ideal for dry or sensitive skin, providing immediate relief from irritation.",
+"Enhanced Glow: Promotes a radiant, healthy-looking complexion with regular use.",
+"Blemish Support: Natural antibacterial properties from honey help maintain clear skin without harshness."
+],
+usage:[
+"1. Dampen: Start by wetting your face with lukewarm water.",
+"2. Dispense: Place one to two pumps of the cleanser into your palms.",
+"3. Lather & Massage: Work into a light lather and massage gently over the face and neck in upward motions.",
+"4. Rinse: Rinse thoroughly with water until the skin feels clean and smooth.",
+"5. Routine: Use both morning and night as the first step in your skincare ritual." 
+],
+},
+
+3:{
+category:"Bright Face Cleanser",
+name:"Glycoloic-Bright Face Cleanser",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["cleanser3.jpg"],
+reasons:[
+"Luminous Finish: Specifically formulated to combat dullness and restore a natural, healthy radiance to the skin.",
+"Triple Active Power: Combines Glycolic Acid, Niacinamide, and Alpha Arbutin for a comprehensive brightening effect.",
+"Gentle Resurfacing: Chemically exfoliates the skin surface to remove dead cells without the need for abrasive scrubs.",
+"Safe for Daily Use: Balanced to provide effective exfoliation while remaining gentle enough for everyday application on all skin types."
+],
+description:"The **Dermalyx Glycoloic-Bright Face Cleanser** is an advanced brightening formula designed to even out skin tone and enhance clarity. By leveraging the exfoliating power of Glycolic Acid alongside skin-refining Niacinamide and Alpha Arbutin, it targets hyperpigmentation and rough texture. This cleanser leaves your skin feeling exceptionally smooth, refreshed, and visibly brighter after every wash.",
+benefits:[
+"Tone Correction:Effectively targets dark spots and uneven skin tone for a more uniform complexion.",
+"Pore Refinement: Niacinamide helps to minimize the appearance of enlarged pores and improve skin elasticity.",
+"Enhanced Smoothness: Accelerates cell turnover to reveal a softer, more velvety skin texture.",
+"Moisture Balance: Gently cleanses without stripping away essential oils, maintaining the skin's natural hydration.",
+],
+usage:[
+"1. Dampen: Begin by wetting your face with lukewarm water.",
+"2. Apply:Dispense a small amount of cleanser onto your fingertips.",
+"3.Massage: Gently massage onto the face in circular motions for 30–60 seconds, avoiding the eye area.",
+"4. Rinse: Rinse thoroughly and pat dry with a soft towel.",
+"5. Protect: Because Glycolic Acid can increase sun sensitivity, always apply a broad-spectrum SPF during the day."
+],
+},
+
+4:{
+category:"CLEANSER",
+name:"Tea-Tree Face Cleanser",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["cleanser4.jpg"],
+reasons:[
+"Nature’s Purifier: Uses the natural antibacterial properties of Tea Tree and Willow Bark to keep skin clear.",
+"Oil Regulation: Helps balance excess sebum production to prevent that midday greasy feel.",
+"Calming Formula: Niacinamide works to soothe redness and irritation associated with blemishes.",
+"Deep Clarification: Penetrates deep into the skin to remove the root causes of congestion and breakouts."
+],
+description:"The Dermalyx Tea-Tree Face Cleanser is a purifying powerhouse specifically designed for those with oily or blemish-prone skin. This Purifying + Clarifying formula utilizes Salicylic Acid to deep-clean pores, while Tea Tree and Willow Bark Extract provide a soothing, botanical defense against imperfections. It provides a crisp, refreshing cleanse that leaves the skin feeling purified and perfectly balanced.",
+benefits:[
+"Blemish Prevention: Actively works to reduce the occurrence of blackheads and whiteheads.",
+"Reduces Redness: Quickly calms inflamed areas for a more peaceful, even-looking complexion.",
+"Antioxidant Support: Willow Bark offers natural antioxidants to protect the skin from environmental stress.",
+"Refreshing Sensation: Leaves a cool, clean feeling that revitalizes the skin instantly."
+],
+usage:[
+"1. Wet: Splash your face with cool or lukewarm water.",
+"2. Lather: Work a small amount of the cleanser into a light lather in your palms.",
+"3. Target: Massage into the skin, focusing on the T-zone or areas prone to congestion.",
+"4. Wash: Rinse thoroughly until no residue remains.",
+"5. Consistency: Use morning and evening as part of your daily clarifying ritual"
+],
+},
+
+5:{
+category:"HYDRATION CLEANER",
+name:"Oil & Acne Face Cleanser",
+tagline:"Deep cleansing boost",
+price:"₹599",
+images:["cleanser5.jpg"],
+reasons:[
+"Targeted Acne Care: Contains Salicylic Acid to penetrate deep into pores and dissolve clogs.",
+"Sebum Control: Zinc PCA helps regulate oil production for a lasting matte finish.",
+"Purifying Action: Effectively removes acne-causing bacteria and environmental pollutants.",
+"Non-Drying: Balanced formula that clears breakouts without stripping the skin's essential moisture."
+],
+description:"The **Dermalyx Oil & Acne Face Cleanser** is a high-performance, purifying formula designed for oily and blemish-prone skin. By leveraging the power of Salicylic Acid and Zinc PCA, this cleanser works to clear existing acne and prevent future breakouts. It deeply cleanses the skin, leaving it feeling fresh, refined, and perfectly balanced.",
+benefits:[
+"Pore Minimization:** Regular use helps to tighten and refine the appearance of enlarged pores.", 
+"Clearer Complexion: Visibly reduces the frequency and severity of breakouts.",
+"Reduces Shine: Keeps the T-zone matte and controlled throughout the day.",
+"Smooth Texture: Gently exfoliates the skin surface to improve overall smoothness and clarity."
+],
+usage:[
+"1. Wet: Splash your face with warm water.",
+"2. Pump: Dispense one pump of the cleanser onto wet hands.",
+"3. Lather: Create a light lather and massage onto the face, focusing on acne-prone areas.",
+"4. Rinse: Rinse thoroughly with cool water to refresh the skin.",
+"5. Daily Routine: For optimal results, use twice daily followed by a lightweight moisturizer."
+],
+},
+
+6:{
+category:"Clarifying  Cleanser",
+name:"Clarifying Cream Cleanser",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["cleanser6.jpg"],
+reasons:[
+"Targeted for Normal to Oily Skin: Specifically formulated to manage excess sebum while maintaining a healthy skin balance.",
+"Deep Cleansing & Hydrating: A dual-action approach that purifies the pores of oil and grime without leaving the skin feeling tight.",
+"Soap & Sulfate Free: A gentle, non-irritating formula that respects the skin’s natural protective barrier.",
+"Generous 400ml Value: Large professional-size bottle (13.52 FL. OZ.) designed for consistent daily use."
+],
+description:"The Dermalyx Clarifying Cream Cleanser is a high-performance solution for those seeking a clear, matte complexion. This sophisticated Deep Cleansing & Hydrating formula lifts away stubborn pollutants and excess oils while delivering essential moisture back into the skin. Its creamy texture provides a soothing application, ensuring your face feels refreshed, purified, and exceptionally soft after every wash.",
+benefits:[
+"Sebum Control: Actively reduces surface shine and helps prevent the buildup that leads to breakouts.",
+"Pore Clarification: Deeply penetrates to remove microscopic debris and urban pollutants.",
+"Barrier Support: The soap-free formula prevents dryness, making it safe for those with sensitive yet oily skin.",
+"Refined Texture: Regular use promotes a smoother, more even skin surface and a natural, healthy glow."
+],
+usage:[
+"1.  Dampen: Wet your face and neck with lukewarm water.",
+"2.  Dispense: Press the pump to dispense 1–2 amounts of the cleanser into your palms.",
+"3.  Massage: Work into a rich cream and massage onto the face in upward circular motions, focusing on the T-zone.",
+"4.  Rinse:Rinse thoroughly with water and pat dry with a clean towel.",
+"5.  Routine:For best results, use every morning and evening as the first step in your skincare ritual"
+],
+},
+};
+/* LOAD PRODUCT */
+const params=new URLSearchParams(window.location.search);
+const id=params.get("id");
+const product=products[id];
+
+if(product){
+document.getElementById("category").innerText=product.category;
+document.getElementById("productName").innerText=product.name;
+document.getElementById("tagline").innerText=product.tagline;
+document.getElementById("productPrice").innerText=product.price;
+document.getElementById("mainImage").src=product.images[0];
+
+const thumbContainer=document.getElementById("thumbnails");
+product.images.forEach(img=>{
+let image=document.createElement("img");
+image.src=img;
+image.onclick=()=>document.getElementById("mainImage").src=img;
+thumbContainer.appendChild(image);
+});
+
+const reasonsList=document.getElementById("reasonsList");
+product.reasons.forEach(reason=>{
+let li=document.createElement("li");
+li.innerText=reason;
+reasonsList.appendChild(li);
+});
+
+const accordion=document.getElementById("accordionSection");
+const sections=[
+{title:"DESCRIPTION",content:product.description},
+{title:"BENEFITS",content:product.benefits},
+{title:"HOW TO USE",content:product.usage}
+];
+
+sections.forEach(sec=>{
+let item=document.createElement("div");
+item.className="accordion-item";
+item.innerHTML=`
+<div class="accordion-header">${sec.title} <span>+</span></div>
+<div class="accordion-content">${sec.content}</div>
+`;
+accordion.appendChild(item);
+});
+}
+
+/* Quantity */
+let quantity=1;
+function increase(){quantity++;document.getElementById("qty").innerText=quantity;}
+function decrease(){if(quantity>1){quantity--;document.getElementById("qty").innerText=quantity;}}
+
+/* Accordion */
+document.addEventListener("click",function(e){
+if(e.target.classList.contains("accordion-header")){
+let content=e.target.nextElementSibling;
+content.style.display=content.style.display==="block"?"none":"block";
+}
+});
+
+function addToCart() {
+    if (!product) return;
+
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+
+    let currentQty = parseInt(document.getElementById("qty").innerText);
+
+    // Check existing item
+    let existingItem = cart.find(item => item.id == id);
+
+    if (existingItem) {
+        existingItem.quantity += currentQty;
+    } else {
+        let numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''));
+
+        cart.push({
+            id: id,
+            name: product.name,
+            price: numericPrice,
+            img: product.images[0],
+            quantity: currentQty
+        });
+    }
+
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+    alert(product.name + " added to cart! 🛒");
+}
+</script>
+
+</body>
+</html>

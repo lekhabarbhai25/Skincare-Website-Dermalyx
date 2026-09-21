@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx – Luxury Skincare</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#000;
+overflow-x:hidden;
+}
+
+/* HERO SECTION */
+
+.landing{
+position:relative;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+/* VIDEO */
+
+.bg-video{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* DARK OVERLAY */
+
+.overlay{
+position:absolute;
+inset:0;
+background:linear-gradient(135deg,rgba(0,0,0,.7),rgba(0,0,0,.4));
+}
+
+/* HERO CONTENT */
+
+.content{
+position:relative;
+text-align:center;
+color:white;
+z-index:2;
+animation:cinematic 1.8s ease;
+}
+
+.content h1{
+font-family:'Playfair Display',serif;
+font-size:90px;
+letter-spacing:12px;
+}
+
+.content p{
+margin:25px 0 45px;
+letter-spacing:4px;
+text-transform:uppercase;
+}
+
+.content a{
+color:white;
+text-decoration:none;
+}
+
+/* BUTTON */
+
+button{
+padding:16px 48px;
+border-radius:40px;
+border:none;
+background:linear-gradient(135deg,#2bb5a6,#4ddbc9);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.4s;
+}
+
+button:hover{
+transform:scale(1.07);
+}
+
+/* SCROLL TEXT */
+
+.scroll{
+position:absolute;
+bottom:-180px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+letter-spacing:5px;
+animation:blink 2s infinite;
+text-align:center;
+font-size:20px;
+}
+
+.scroll a{
+color:white;
+text-decoration:none;
+}
+
+/* BUBBLES */
+
+.bubbles span{
+position:absolute;
+width:12px;
+height:12px;
+background:rgba(255,255,255,0.5);
+border-radius:50%;
+animation:float 10s linear infinite;
+}
+
+/* GALLERY */
+
+.gallery{
+min-height:100vh;
+padding:100px 10%;
+background:linear-gradient(135deg,#f6fefe,#ffffff);
+text-align:center;
+background-attachment:fixed;
+}
+
+.gallery h2{
+font-family:'Playfair Display',serif;
+font-size:46px;
+margin-bottom:70px;
+}
+
+/* GRID */
+
+.image-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:50px;
+}
+
+/* PRODUCT BOX */
+
+.img-box{
+height:380px;
+border-radius:25px;
+overflow:hidden;
+box-shadow:0 30px 60px rgba(0,0,0,0.15);
+transition:.6s;
+transform-style:preserve-3d;
+}
+
+.img-box img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* ANIMATIONS */
+
+@keyframes cinematic{
+from{opacity:0; transform:translateY(60px) scale(.95);}
+to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+@keyframes blink{
+0%,100%{opacity:.3}
+50%{opacity:1}
+}
+
+@keyframes float{
+0%{transform:translateY(0); opacity:0}
+50%{opacity:.8}
+100%{transform:translateY(-800px); opacity:0}
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.content h1{
+font-size:60px;
+letter-spacing:8px;
+}
+
+.gallery h2{
+font-size:34px;
+}
+
+button{
+padding:14px 36px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HERO VIDEO SECTION -->
+
+<section class="landing">
+
+<video autoplay muted loop class="bg-video">
+<source src="backgroundvideo.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<div class="content">
+<h1>DERMALYX</h1>
+<p>Luxury Skincare Crafted By Nature & Science</p>
+
+<button id="enterBtn">Explore Collection</button>
+
+<div class="scroll">
+<a href="home.html">HOME</a>
+</div>
+
+<div class="bubbles"></div>
+
+</section>
+
+<script>
+
+/* SMOOTH SCROLL */
+
+document.getElementById("enterBtn").addEventListener("click",()=>{
+document.querySelector(".gallery").scrollIntoView({behavior:"smooth"});
+});
+
+
+/* FLOATING BUBBLES */
+
+const bubbleContainer=document.querySelector(".bubbles");
+
+for(let i=0;i<50;i++){
+
+let bubble=document.createElement("span");
+
+let size=Math.random()*8+4;
+
+bubble.style.width=size+"px";
+bubble.style.height=size+"px";
+bubble.style.left=Math.random()*100+"%";
+
+bubble.style.animationDuration=(Math.random()*6+6)+"s";
+bubble.style.animationDelay=Math.random()*5+"s";
+
+bubbleContainer.appendChild(bubble);
+
+}
+
+document.getElementById("enterBtn").addEventListener("click", ()=>{
+  window.location.href = "product.html";
+});
+
+// SERVER CHECK
+async function checkServer(){
+  try{
+    const res = await fetch("http://localhost:3000/products");
+    const data = await res.json();
+    console.log("Server Connected ✅");
+  }catch(err){
+    alert("Server not connected ❌");
+  }
+}
+checkServer();
+
+// NAVIGATION
+document.getElementById("enterBtn").addEventListener("click", ()=>{
+  window.location.href = "product.html";
+});
+
+// LOAD PRODUCTS (optional)
+async function loadProducts(){
+  try{
+    const res = await fetch("http://localhost:3000/products");
+    const products = await res.json();
+    console.log(products);
+  }catch(err){
+    console.log("Error ❌");
+  }
+}
+loadProducts();
+
+/* 3D TILT EFFECT */
+
+document.querySelectorAll(".tilt").forEach(card=>{
+
+card.addEventListener("mousemove",(e)=>{
+
+let rect=card.getBoundingClientRect();
+
+let x=e.clientX-rect.left;
+let y=e.clientY-rect.top;
+
+let cx=rect.width/2;
+let cy=rect.height/2;
+
+let dx=(x-cx)/15;
+let dy=(y-cy)/15;
+
+card.style.transform=`rotateY(${dx}deg) rotateX(${-dy}deg) scale(1.05)`;
+
+});
+card.addEventListener("mouseleave",()=>{
+
+card.style.transform="rotateY(0) rotateX(0) scale(1)";
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

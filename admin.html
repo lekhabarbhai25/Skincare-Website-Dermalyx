@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx Admin Dashboard</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', sans-serif;
+}
+
+body{
+  background:#f4f6fb;
+}
+
+/* Toggle */
+.menu-toggle{
+  display:none;
+  position:fixed;
+  top:15px;
+  left:15px;
+  background:#ff4b2b;
+  color:white;
+  padding:8px 12px;
+  border-radius:6px;
+  font-size:20px;
+  cursor:pointer;
+  z-index:999;
+}
+
+/* Layout */
+.dashboard{
+  display:flex;
+  min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+  width:230px;
+  background:linear-gradient(180deg,#ff416c,#ff4b2b);
+  color:white;
+  padding:25px 15px;
+  transition:0.3s;
+}
+
+.logo{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.sidebar ul{
+  list-style:none;
+}
+
+.sidebar ul li{
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active{
+  background:rgba(255,255,255,0.25);
+}
+
+/* Main */
+.main-content{
+  flex:1;
+  padding:25px;
+}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.card{
+  padding:18px;
+  border-radius:15px;
+  color:white;
+  text-align:center;
+}
+
+.pink{background:#ff758c;}
+.blue{background:#43cea2;}
+.green{background:#38ef7d;}
+.purple{background:#667eea;}
+
+/* Section */
+.section{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
+}
+
+/* Inputs */
+input{
+  padding:10px;
+  margin:5px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+button{
+  padding:10px 15px;
+  background:#ff4b2b;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+table th, table td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+}
+
+table img{
+  width:40px;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;
+    left:-250px;
+    top:0;
+    height:100%;
+  }
+  .sidebar.show{
+    left:0;
+  }
+  .menu-toggle{
+    display:block;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+<div class="dashboard">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <h2 class="logo">DERMALYX</h2>
+    <ul>
+      <li class="active">Dashboard</li>
+      <li>Products</li>
+      <li>Orders</li>
+      <li onclick="logout()">Logout</li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <h1>Admin Dashboard</h1>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="card pink"><h3>Products</h3><p>--</p></div>
+      <div class="card blue"><h3>Orders</h3><p>--</p></div>
+      <div class="card green"><h3>Users</h3><p>--</p></div>
+      <div class="card purple"><h3>Revenue</h3><p>--</p></div>
+    </section>
+
+    <!-- Add Product -->
+    <section class="section">
+      <h2>Add Product</h2>
+
+      <input type="text" id="name" placeholder="Product Name">
+      <input type="number" id="price" placeholder="Price">
+      <button onclick="addProduct()">Add</button>
+    </section>
+
+    <!-- Product Table -->
+    <section class="section">
+      <h2>Product Management</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+
+        <tbody id="productTable"></tbody>
+      </table>
+
+    </section>
+
+  </main>
+
+</div>
+<script>
+
+// ================= USER CHECK =================
+const user = JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+  alert("Please Login First ❌");
+  window.location.href = "login.html";
+}
+
+// MongoDB uses _id
+console.log("User ID:", user._id);
+console.log("User Email:", user.email);
+
+// ================= LOGOUT =================
+function logout(){
+  localStorage.removeItem("user");
+  alert("Logged out ✅");
+  window.location.href = "login.html";
+}
+
+// ================= TOGGLE MENU =================
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("show");
+}
+
+// ================= LOAD PRODUCTS =================
+async function loadProducts(){
+  try{
+
+    const res = await fetch("http://localhost:3000/products");
+
+    if(!res.ok) throw new Error("Failed to load");
+
+    const data = await res.json();
+
+    let html = "";
+
+    data.forEach(p=>{
+      html += `
+        <tr>
+          <td><img src="${p.image || 'https://via.placeholder.com/40'}"></td>
+          <td>${p.name}</td>
+          <td>${p.category || 'General'}</td>
+          <td>₹${p.price}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("productTable").innerHTML = html;
+
+  }catch(err){
+    console.log(err);
+    alert("Error loading products ❌");
+  }
+}
+
+// ================= ADD PRODUCT =================
+async function addProduct(){
+
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+
+  if(!name || !price){
+    alert("Enter all details ❌");
+    return;
+  }
+
+  try{
+
+    const res = await fetch("http://localhost:3000/add-product",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        name,
+        price,
+        category:"General",
+        image:"https://via.placeholder.com/40"
+      })
+    });
+
+    if(!res.ok) throw new Error("Add failed");
+
+    alert("Product Added ✅");
+
+    // clear inputs
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+
+    loadProducts();
+
+  }catch(err){
+    console.log(err);
+    alert("Error adding product ❌");
+  }
+}
+
+// ================= LOAD ON START =================
+loadProducts();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dermalyx Skincare</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* GLOBAL */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:linear-gradient(to bottom,#f7fdfd,#eef7f7);
+color:#333;
+}
+
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
+background:white;
+position:sticky;
+top:0;
+z-index:1000;
+transition:0.4s;
+}
+
+.navbar.transparent{
+background:rgba(255,255,255,0.8);
+backdrop-filter:blur(10px);
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+color:#000;
+}
+
+nav{
+display:flex;
+}
+
+nav a{
+margin:0 15px;
+text-decoration:none;
+color:#333;
+font-weight:500;
+}
+
+nav a:hover{
+color:#0a7b7f;
+}
+
+.menu-toggle{
+display:none;
+font-size:24px;
+cursor:pointer;
+}
+
+
+/* HERO */
+
+.hero{
+position:relative;
+height:75vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+overflow:hidden;
+}
+
+.hero video{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:0;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.4);
+}
+
+.hero-content{
+position:relative;
+z-index:1;
+animation:fadeUp 1s ease;
+}
+
+.hero h1{
+font-size:50px;
+margin-bottom:15px;
+}
+
+.hero p{
+margin-bottom:25px;
+}
+
+.btn{
+padding:12px 25px;
+border:none;
+background:#000;
+color:white;
+border-radius:8px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#065c5f;
+transform:translateY(-3px);
+}
+
+
+/* PRODUCTS */
+
+.products{
+padding:70px 40px;
+text-align:center;
+}
+
+.products h2{
+font-size:35px;
+color:#000;
+}
+
+.product-grid{
+display:grid;
+grid-template-columns: repeat(3, 1fr);
+gap:30px;
+margin-top:40px;
+max-width:1100px;
+margin-left:auto;
+margin-right:auto;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:14px;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+transition:0.3s;
+text-align:center;
+}
+
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+
+.img{
+width:100%;
+height:200px;
+background:#dff5f6;
+border-radius:10px;
+margin-bottom:15px;
+background-size:cover;
+background-position:center;
+}
+
+
+/* ABOUT */
+
+.about{
+padding:70px 40px;
+text-align:center;
+background:#e9f7f8;
+}
+
+.about h2{
+font-size:32px;
+color:#000;
+}
+.about-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:30px;
+max-width:1000px;
+margin-left:auto;
+margin-right:auto;
+}
+
+.about-item{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.about-item:hover{
+transform:translateY(-6px);
+}
+
+.about-item h3{
+color:#0a7b7f;
+margin-bottom:10px;
+}
+
+
+/* REVIEWS */
+
+.reviews{
+padding:70px 40px;
+text-align:center;
+font-size:18px;
+}
+
+.reviews h2{
+font-size:32px;
+color:#000;
+}
+
+.review-grid{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+justify-content:center;
+margin-top:30px;
+}
+
+.review{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 10px rgba(0,0,0,0.1);
+max-width:300px;
+}
+
+.stars{
+color:orange;
+margin-bottom:10px;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+background:#111;
+color:#ddd;
+padding:60px 50px 20px;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:40px;
+}
+
+.footer-col h3,
+.footer-col h4{
+margin-bottom:15px;
+color:white;
+}
+
+.footer-col p{
+font-size:14px;
+line-height:1.6;
+color:#bbb;
+}
+
+.footer-col a{
+display:block;
+color:#bbb;
+text-decoration:none;
+margin-bottom:8px;
+font-size:14px;
+transition:0.3s;
+}
+
+.footer-col a:hover{
+color:white;
+padding-left:5px;
+}
+
+.footer-bottom{
+text-align:center;
+margin-top:40px;
+padding-top:20px;
+border-top:1px solid #333;
+font-size:14px;
+color:#777;
+}
+
+/* POPUP */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.popup.show{
+display:flex;
+}
+
+.popup-box{
+background:white;
+padding:30px;
+border-radius:12px;
+text-align:center;
+transition:0.3s;
+position:relative;
+animation:popupAnim .4s ease;
+}
+
+.popup-box span{
+position:absolute;
+right:15px;
+top:10px;
+cursor:pointer;
+font-size:20px;
+}
+/* Footer Responsive */
+@media(max-width:900px){
+.footer-container{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media(max-width:600px){
+.footer-container{
+grid-template-columns:1fr;
+text-align:center;
+}
+}
+
+/* ANIMATIONS */
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(40px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes popupAnim{
+from{opacity:0;transform:scale(.7);}
+to{opacity:1;transform:scale(1);}
+}
+
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+nav{
+display:none;
+flex-direction:column;
+background:white;
+position:absolute;
+right:20px;
+top:70px;
+padding:20px;
+border-radius:10px;
+}
+
+nav.show{
+display:flex;
+}
+
+.menu-toggle{
+display:block;
+}
+
+.hero h1{
+font-size:34px;
+}
+
+.newsletter input{
+width:100%;
+margin-bottom:10px;
+}
+
+/* Tablet */
+@media(max-width:900px){
+.product-grid{
+grid-template-columns: repeat(2,1fr);
+}
+}
+
+/* Mobile */
+@media(max-width:600px){
+.product-grid{
+grid-template-columns:1fr;
+}
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- POPUP -->
+
+<div class="popup" id="popup">
+<div class="popup-box">
+<span id="closePopup">✖</span>
+<h2>Welcome to Dermalyx</h2>
+<p>Get 20% OFF on your first order</p>
+<button class="btn"><a href="product.html">Shop Now</a></button>
+</div>
+</div>
+
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+<div class="logo">Dermalyx</div>
+
+<nav id="navMenu">
+    <a href="home.html">Home</a>
+    <a href="product.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="term.html">Privacy</a>
+    <a href="login.html">Login</a>
+    <a href="admin.html">Admin</a>
+</nav>
+
+<div class="menu-toggle" id="menuToggle">☰</div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<video autoplay muted loop>
+<source src="homevideo.mp4" type="video/mp4">
+</video>
+
+<div class="hero-content">
+<h1>Glow Naturally With Dermalyx</h1>
+<p>Advanced skincare solutions for radiant healthy skin.</p>
+<button class="btn"><a href="product.html">Shop Collection</a></button>
+</div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section class="products">
+
+<h2>Our Best Sellers</h2>
+
+<div class="product-grid">
+
+<div class="card">
+<div class="img" style="background-image:url('serum3.jpg')"></div>
+<h3>Niaciamide Serum</h3>
+<p>Deep hydration</p>
+</div>
+
+<div class="card">
+<div class="img" style="background-image:url('scrub1.jpg')"></div>
+<h3>Coffee Scrub</h3>
+<p>Brightening glow</p>
+</div>
+
+<div class="card">
+<div class="img" style="background-image:url('cleanser2.jpg')"></div>
+<h3>Honey Cleanser</h3>
+<p>Soft cleanse</p>
+</div>
+
+<div class="card">
+<div class="img" style="background-image:url('bodylotion4.jpg')"></div>
+<h3>Coco Rich Butter</h3>
+<p>Skin renewal</p>
+</div>
+
+<div class="card">
+<div class="img" style="background-image:url('facewash4.jpg')"></div>
+<h3>Charcoal Facewash</h3>
+<p>Acne protection</p>
+</div>
+
+<div class="card">
+<div class="img" style="background-image:url('sunscreen6.jpg')"></div>
+<h3>SPF 35</h3>
+<p>Sun protection</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section class="about">
+
+<h2>Why Choose Dermalyx?</h2>
+
+<div class="about-grid">
+
+<div class="about-item">
+<h3>Dermatologist Approved</h3>
+<p>Developed with skincare experts.</p>
+</div>
+
+<div class="about-item">
+<h3>Clean Ingredients</h3>
+<p>No parabens or harsh chemicals.</p>
+</div>
+
+<div class="about-item">
+<h3>Sustainable</h3>
+<p>Eco friendly packaging.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REVIEWS -->
+
+<section class="reviews">
+
+<h2>Customer Reviews</h2>
+
+<div class="review-grid">
+
+<div class="review">
+<div class="stars">★★★★★</div>
+<p>My skin feels amazing after using Dermalyx products.</p>
+</div>
+
+<div class="review">
+<div class="stars">★★★★★</div>
+<p>Vitamin C cream gave my skin natural glow.</p>
+</div>
+
+<div class="review">
+<div class="stars">★★★★★</div>
+<p>Great skincare brand with clean ingredients.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h3>DERMALYX</h3>
+      <p>Premium skincare products designed for radiant and healthy skin. Glow naturally with Dermalyx.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="home.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="cart.html">Cart</a>
+      <a href="login.html">Login</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Customer Care</h4>
+      <a href="#">Contact Us</a>
+      <a href="#">Shipping Policy</a>
+      <a href="#">Return Policy</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Follow Us</h4>
+      <p>Instagram</p>
+      <p>Facebook</p>
+      <p>Twitter</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Dermalyx. All Rights Reserved.
+  </div>
+</footer>
+
+<script>
+
+/* Mobile Menu */
+
+const toggle=document.getElementById("menuToggle");
+const nav=document.getElementById("navMenu");
+
+toggle.onclick=()=>{
+nav.classList.toggle("show");
+};
+
+
+/* Popup */
+
+const popup=document.getElementById("popup");
+const closePopup=document.getElementById("closePopup");
+
+window.onload=()=>{
+setTimeout(()=>{
+popup.classList.add("show");
+},1500);
+};
+
+closePopup.onclick=()=>{
+popup.classList.remove("show");
+};
+
+
+/* Navbar Scroll */
+
+window.addEventListener("scroll",()=>{
+document.querySelector(".navbar")
+.classList.toggle("transparent",window.scrollY>50);
+});
+
+</script>
+
+</body>
+</html>

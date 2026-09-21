@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx Skincare</title>
+
+<style>
+
+/* GLOBAL */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:#f6f7f8;
+}
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:rgba(255,255,255,0.9);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+letter-spacing:2px;
+}
+
+nav{
+display:flex;
+gap:25px;
+}
+
+nav a{
+text-decoration:none;
+color:#333;
+font-weight:500;
+}
+
+.menu-btn{
+display:none;
+font-size:26px;
+cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+height:420px;
+background:
+linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),
+url("nature.jpg");
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+}
+
+.hero h1{
+font-size:42px;
+}
+
+/* PRODUCTS */
+
+.our-products{
+padding:80px 20px;
+text-align:center;
+}
+
+.our-products h2{
+font-size:32px;
+margin-bottom:40px;
+}
+
+.category-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+max-width:900px;
+margin:auto;
+}
+
+.cat{
+background:white;
+padding:35px;
+border-radius:12px;
+font-size:18px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+transition:all 0.35s ease;
+cursor:pointer;
+}
+
+/* Hover effect */
+
+.cat:hover{
+background:#e5e5e5;   /* turns grey */
+transform:translateY(-10px) scale(1.05); /* pop up */
+box-shadow:0 12px 28px rgba(0,0,0,0.18);
+}
+
+.cat a{
+text-decoration:none;
+color:#333;
+font-weight:bold;
+}
+
+/* NATURE MEETS SCIENCE */
+
+.nature-science{
+padding:100px 40px;
+background:#f8fafb;
+}
+
+.nature-container{
+max-width:1100px;
+margin:auto;
+display:flex;
+align-items:center;
+gap:60px;
+}
+
+.nature-text{
+flex:1;
+}
+
+.nature-text h2{
+font-size:36px;
+margin-bottom:25px;
+}
+
+.nature-text p{
+font-size:18px;
+line-height:1.8;
+color:#555;
+}
+
+.nature-image{
+flex:1;
+}
+
+.nature-image img{
+width:100%;
+border-radius:16px;
+box-shadow:0 12px 25px rgba(0,0,0,0.15);
+}
+
+/* INGREDIENT INTEGRITY */
+
+.integrity{
+height:420px;
+background:
+linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
+url("https://images.unsplash.com/photo-1556228578-8c89e6adf883");
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+padding:20px;
+}
+
+.integrity h2{
+font-size:36px;
+margin-bottom:15px;
+}
+
+.integrity p{
+max-width:650px;
+font-size:18px;
+line-height:1.6;
+}
+
+/* SKINCARE BENEFITS */
+
+.benefits{
+padding:80px 20px;
+text-align:center;
+background:white;
+}
+
+.benefits h2{
+font-size:32px;
+margin-bottom:40px;
+}
+
+.benefit-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+max-width:1000px;
+margin:auto;
+}
+
+.benefit{
+background:#f4f6f8;
+padding:30px;
+border-radius:12px;
+transition:all 0.3s ease;
+cursor:pointer;
+}
+
+/* POP UP WHEN CLICKED */
+
+.benefit.active{
+transform:translateY(-12px) scale(1.05);
+box-shadow:0 12px 25px rgba(0,0,0,0.18);
+background:#eaeaea;
+}
+
+.benefit h3{
+margin-bottom:10px;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+background:#111;
+color:#ddd;
+padding:60px 50px 20px;
+margin-top:50px;
+}
+
+.footer-container{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:40px;
+}
+
+.footer-col h3,
+.footer-col h4{
+margin-bottom:15px;
+color:white;
+}
+
+.footer-col p{
+font-size:14px;
+line-height:1.6;
+color:#bbb;
+}
+
+.footer-col a{
+display:block;
+color:#bbb;
+text-decoration:none;
+margin-bottom:8px;
+font-size:14px;
+transition:0.3s;
+}
+
+.footer-col a:hover{
+color:white;
+padding-left:5px;
+}
+
+.footer-bottom{
+text-align:center;
+margin-top:40px;
+padding-top:20px;
+border-top:1px solid #333;
+font-size:14px;
+color:#777;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.category-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.benefit-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.nature-container{
+flex-direction:column;
+text-align:center;
+}
+
+}
+
+@media(max-width:600px){
+
+.menu-btn{
+display:block;
+}
+
+nav{
+position:absolute;
+top:70px;
+right:0;
+background:white;
+flex-direction:column;
+padding:20px;
+display:none;
+}
+
+nav.show{
+display:flex;
+}
+
+.category-grid{
+grid-template-columns:1fr;
+}
+
+.benefit-grid{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:30px;
+}
+}
+/* Footer Responsive */
+@media(max-width:900px){
+.footer-container{
+grid-template-columns:repeat(2,1fr);
+}
+}
+
+@media(max-width:600px){
+.footer-container{
+grid-template-columns:1fr;
+text-align:center;
+}
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+<div class="logo">DERMALYX</div>
+
+<nav id="navMenu">
+<a href="home.html">Home</a>
+<a href="product.html">Products</a>
+<a href="cart.html">Cart</a>
+<a href="term.html">Privacy</a>
+<a href="login.html">Login</a>
+<a href="admin.html">Admin</a>
+</nav>
+
+<div class="menu-btn" id="menuBtn">☰</div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+<h1>Explore Your Skincare Collection</h1>
+</section>
+
+
+<!-- OUR PRODUCTS -->
+
+<section class="our-products">
+
+<h2>Our Products</h2>
+
+<div class="category-grid">
+
+<div class="cat"><a href="cleanser.html">Cleanser</a></div>
+<div class="cat"><a href="serum.html">Serum</a></div>
+<div class="cat"><a href="scrub.html">Scrubs</a></div>
+<div class="cat"><a href="sunscreen.html">Sunscreen</a></div>
+<div class="cat"><a href="facewash.html">Face Wash</a></div>
+<div class="cat"><a href="bodylotion.html">Body Lotion</a></div>
+
+</div>
+
+</section>
+
+
+<!-- NATURE MEETS SCIENCE -->
+
+<section class="nature-science">
+
+<div class="nature-container">
+
+<div class="nature-text">
+
+<h2>Nature Meets Science</h2>
+
+<p>
+At Dermalyx, we combine carefully sourced natural ingredients with
+advanced skincare science to create formulas that nourish, protect,
+and enhance your skin's natural glow.
+</p>
+
+</div>
+
+<div class="nature-image">
+<img src="science.jpg" alt="Nature Meets Science">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- INGREDIENT INTEGRITY -->
+
+<section class="integrity">
+
+<div>
+<h2>Ingredient Integrity</h2>
+
+<p>
+We thoughtfully source every ingredient to ensure maximum purity,
+effectiveness, and sustainability, delivering safe and high-quality
+products you can trust.
+</p>
+</div>
+
+</section>
+
+
+<!-- SKINCARE BENEFITS -->
+
+<section class="benefits">
+
+<h2>Skincare Benefits</h2>
+
+<div class="benefit-grid">
+
+<div class="benefit" onclick="toggleBenefit(this)">
+<h3>Hydration</h3>
+<p>Deep hydration that keeps your skin soft and glowing.</p>
+</div>
+
+<div class="benefit" onclick="toggleBenefit(this)">
+<h3>Protection</h3>
+<p>Protects skin from pollution and environmental damage.</p>
+</div>
+
+<div class="benefit" onclick="toggleBenefit(this)">
+<h3>Natural Glow</h3>
+<p>Enhances skin radiance and improves texture.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h3>DERMALYX</h3>
+      <p>Premium skincare products designed for radiant and healthy skin. Glow naturally with Dermalyx.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="home.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="cart.html">Cart</a>
+      <a href="login.html">Login</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Customer Care</h4>
+      <a href="#">Contact Us</a>
+      <a href="#">Shipping Policy</a>
+      <a href="#">Return Policy</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Follow Us</h4>
+      <p>Instagram</p>
+      <p>Facebook</p>
+      <p>Twitter</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Dermalyx. All Rights Reserved.
+  </div>
+</footer>
+
+
+<script>
+
+const menuBtn=document.getElementById("menuBtn");
+const navMenu=document.getElementById("navMenu");
+
+menuBtn.addEventListener("click",()=>{
+navMenu.classList.toggle("show");
+});
+</script>
+
+</body>
+</html>

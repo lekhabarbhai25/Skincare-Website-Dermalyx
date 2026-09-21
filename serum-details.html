@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx | Serum Details</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f6f6f6;color:#222;}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo{font-size:22px;font-weight:bold;letter-spacing:2px;}
+
+.product-container{
+display:flex;
+gap:60px;
+padding:60px;
+align-items:flex-start;
+}
+
+/* IMAGE */
+.image-section{flex:1;}
+.main-img{
+width:100%;
+max-width:450px;
+border-radius:10px;
+}
+.thumbnail-container{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+.thumbnail-container img{
+width:70px;
+height:70px;
+object-fit:cover;
+cursor:pointer;
+border-radius:6px;
+border:2px solid transparent;
+}
+.thumbnail-container img:hover{
+border:2px solid black;
+}
+
+/* INFO */
+.info-section{flex:1;}
+.category{
+font-size:12px;
+letter-spacing:2px;
+color:#777;
+margin-bottom:10px;
+}
+h1{font-size:32px;margin-bottom:10px;}
+.price{font-size:24px;font-weight:bold;margin:10px 0;}
+.tagline{color:#666;margin-bottom:10px;}
+.rating{color:#ff9900;margin-bottom:15px;}
+
+.quantity{
+display:flex;
+gap:15px;
+align-items:center;
+margin-bottom:20px;
+}
+.quantity button{
+width:35px;height:35px;border:none;background:#ddd;font-size:18px;cursor:pointer;
+}
+
+.add-btn{
+width:100%;
+padding:15px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+/* REASONS */
+.reasons ul{padding-left:18px;margin:10px 0;}
+.reasons li{margin-bottom:8px;color:#555;}
+
+/* ACCORDION */
+.accordion-item{border-top:1px solid #ddd;}
+.accordion-header{
+padding:15px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+}
+.accordion-content{
+display:none;
+padding:15px;
+color:#555;
+}
+
+@media(max-width:900px){
+.product-container{flex-direction:column;padding:30px;}
+.main-img{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo">DERMALYX</div>
+</header>
+
+<section class="product-container">
+
+<div class="image-section">
+<img id="mainImage" class="main-img">
+<div class="thumbnail-container" id="thumbnails"></div>
+</div>
+
+<div class="info-section">
+<div class="category" id="category"></div>
+<h1 id="productName"></h1>
+<div class="tagline" id="tagline"></div>
+<div class="price" id="productPrice"></div>
+<div class="rating">★★★★★ 4.9 (88 Reviews)</div>
+
+<div class="quantity">
+<button onclick="decrease()">-</button>
+<span id="qty">1</span>
+<button onclick="increase()">+</button>
+</div>
+
+<button class="add-btn" onclick="addToCart()">ADD TO CART</button>
+
+<div class="reasons">
+<h3>REASONS TO LOVE:</h3>
+<ul id="reasonsList"></ul>
+</div>
+
+<div class="accordion" id="accordionSection"></div>
+</div>
+</section>
+
+<script>
+
+/* PRODUCT DATABASE */
+const products = {
+
+1:{
+category:"BRIGHTENING SERUM",
+name:"Vitamin C Serum",
+tagline:"Boost glow & reduce dark spots",
+price:"₹699",
+images:["serum1.jpg"],
+reasons:[
+"Maximum Strength Brightening:Powered by 15% L-Ascorbic Acid, the most potent form of Vitamin C.",
+"Antioxidant Shield:Formulated to neutralize free radicals and protect against environmental pollutants.",
+"Glow Restoration:Actively targets dullness to restore a vibrant, luminous complexion.",
+"Hydrating Brilliance:Infused with Hyaluronic Acid and Vitamin E to brighten without drying out the skin."
+],
+description:"The Dermalyx Vitamin C Serum is an elite Brightening + Antioxidant formula designed for high-impact skin correction. Featuring a 15% concentration of L-Ascorbic Acid, this serum is stabilized with Vitamin E and boosted with Hyaluronic Acid for superior performance. It works to actively fade discoloration and promote a more uniform skin tone, making it an essential tool for achieving a truly radiant and energized look.",
+benefits:[
+"Intense Radiance:Visibly brightens the skin and reduces signs of fatigue and dullness.",
+"Tone Correction:Helps to diminish the appearance of dark spots, sun damage, and acne marks.",
+"Photo-Aging Protection:Vitamin E works in synergy with Vitamin C to double the skin's defense against UV stress.",
+"Smooth Finish:Refines skin texture over time for a more polished and even appearance."
+],
+usage:[
+"1. Prep: Cleanse your face thoroughly and pat dry.",
+"2. *Dispense: Apply 3–4 drops to your fingertips.",
+"3. *Smooth: Massage gently over the face and neck, avoiding the immediate eye area.",
+"4. *Wait: Allow the serum to absorb for 60 seconds before applying other products.",
+"5. *Protection: Always apply a broad-spectrum SPF during the day when using Vitamin C to maintain results."
+]
+},
+
+2:{
+category:"SALICYLIC SERUM",
+name:"Salicylic Serum",
+tagline:"Clear pores & reduce acne",
+price:"₹499",
+images:["serum2.jpg"],
+reasons:[
+"Targeted Blemish Control*: Formulated to rapidly address active breakouts and prevent new ones from forming.",
+"Barrier Support*: Infused with 2% Niacinamide to strengthen the skin's defense and improve overall resilience.",
+"Oil Regulation*: Features Witch Hazel to naturally refine pores and control excess sebum production.",
+"Gentle Clarification*: Provides effective Exfoliating + Blemish Control without the harsh stripping often associated with acne treatments.",
+],
+description:"The Dermalyx Salicylic Acid Serum is your primary defense against stubborn blemishes and oily skin. This specialized formula utilizes a potent clarifying base enhanced with 2% Niacinamide and cooling Witch Hazel. It works to calm inflamed skin while clearing out the deep-seated impurities that lead to breakouts. The result is a balanced, matte complexion that feels purified and remarkably smooth.",
+benefits:[
+"Rapid Calming*: Witch Hazel and Niacinamide work together to visibly reduce the redness and swelling of active blemishes.",
+"Clearer Complexion*: Actively dissolves the glue that holds dead skin and oil together in the pores.",
+"Tone Correction*: Helps to prevent and fade the dark marks (post-inflammatory hyperpigmentation) left behind by old breakouts.",
+"Shine Control*: Helps maintain a fresh, matte finish throughout the day by balancing the skin's natural oil levels."
+],
+usage:[
+"1. Cleanse: Start with a thoroughly cleansed face.",
+"2. *Target: Apply 2–3 drops either to the entire face or as a spot treatment on specific problem areas.",
+"3. *Absorb: Gently massage in until the serum is completely absorbed.",
+"4. *Follow-up: Apply a lightweight, non-comedogenic moisturizer to lock in the treatment.",
+"5. *Frequency: Can be used once daily, preferably at night, or as needed for blemish management."
+],
+},
+
+3:{
+category:"NIACINAMIDE SERUM",
+name:"Niacinamide Serum",
+tagline:"Refine pores & improve texture",
+price:"₹499",
+images:["serum3.jpg"],
+reasons:[
+"10% Niacinamide Concentration:* High-strength Vitamin B3 to effectively target blemishes and enlarged pores.",
+"Zinc PCA Synergy:Works alongside Niacinamide to balance oil production and calm active breakouts.",
+"Pore Refining: Specifically engineered to tighten skin texture for a smoother, clearer appearance.",
+"Hydrating Finish: Formulated to be Pore Refining + Hydrating,ensuring a balanced complexion without dryness."
+],
+description:"The Dermalyx Niacinamide Serum is a powerhouse formula designed to clarify and balance the skin. Featuring a potent 10% Niacinamide blend combined with Zinc PCA, it acts as a Pore Refining + Hydrating solution for oily and congested skin types. This lightweight, water-based serum effectively strengthens the skin's barrier, reduces redness, and controls excess sebum, leaving your face feeling purified and perfectly hydrated.",
+benefits:[
+"Blemish Control: Visibly reduces the frequency of breakouts and calms existing inflammation.",
+"Pore Minimization: Tightens the appearance of stretched or enlarged pores for a refined look.",
+"Barrier Repair: Helps the skin retain moisture and stay resilient against environmental stressors.",
+"Tone Correction: Fades post-acne marks and targets uneven skin tone for a brighter complexion."
+],
+usage:[
+"1. Prep: Apply to a clean, slightly damp face after cleansing.",
+"2. Apply: Dispense 3–4 drops and smooth evenly across the skin.",
+"3. Absorb: Allow the serum to sink in completely before applying heavier creams or oils.",
+"4. Layering: This versatile serum can be used both in the morning and evening.",
+"5. Routine: Follow with a moisturizer to lock in the active ingredients.",
+],
+},
+
+4:{
+category:"HYDRATION SERUM",
+name:"Hyaluronic Serum",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["serum4.jpg"],
+reasons:[
+"Triple Action Hydration: Features a potent 1.5% Hyaluronic Acid blend for multi-level moisture.",
+"Barrier Fortification: Infused with Ceramides to strengthen your skin’s natural protective shield.",
+"Soothing Vitamin B5: Contains Panthenol (Vitamin B5) to calm the skin and lock in deep hydration.",
+"Instant Plumping: Designed to immediately revitalize dehydrated skin for a bouncy, youthful look."
+],
+description:"The Dermalyx Hyaluronic Acid Serum is a concentrated Intense Hydration + Plumping treatment engineered to rescue dry and dull skin. By combining high-purity Hyaluronic Acid with Vitamin B5 and essential Ceramides, this serum works to draw moisture deep into the skin's layers. Its lightweight, water-gel texture absorbs instantly, transforming your complexion from parched to perfectly hydrated and supple.",
+benefits:[
+"Deep Moisture Surge:Provides long-lasting hydration that prevents dryness throughout the day.",
+"Visibly Plumper Skin: Fills out fine lines caused by dehydration for a smoother appearance.",
+"Enhanced Resilience: Ceramides help prevent transepidermal water loss, keeping skin healthy.",
+"Dewy Glow: Leaves a soft, non-sticky finish that serves as a perfect base for makeup or oils."
+],
+usage:[
+"1. Dampen: For best results, apply to a slightly damp face after cleansing.",
+"2. Apply: Use the dropper to dispense 2–3 drops onto your palms.",
+"3. Press: Gently press the serum into your skin rather than rubbing it in.",
+"4. Seal: Always follow up immediately with a moisturizer to lock in the hydration.",
+"5. Routine:* Safe for use both morning and night as a foundational step in your routine."
+],
+
+},
+
+5:{
+category:"ANTI-AGING SERUM",
+name:"Retinol + Peptides Serum",
+tagline:"Powerful wrinkle reduction",
+price:"₹799",
+images:["serum5.jpg"],
+reasons:[
+"Retinol + Peptides Dual Power: Combines the gold standard in skin renewal with structural peptides for firming.",
+"0.5% Retinol & Bakuchiol: Delivers powerful anti-aging results with a stabilized blend to minimize irritation.",
+"Deep Hydration: Infused with Hyaluronic Acid to plump the skin and prevent the dryness often associated with retinol.",
+"Overnight Restoration: Formulated to work with your skin’s natural repair cycle for visible morning results."
+],
+description:"The Dermalyx Anti-Aging Serum* is an advanced Retinol + Peptides treatment designed to target the multiple signs of aging. By utilizing 0.5% Retinol alongside the plant-based alternative Bakuchiol, it effectively accelerates cell turnover to reduce the appearance of fine lines and wrinkles. This potent formula is balanced with Hyaluronic Acid to provide a surge of moisture, ensuring your skin remains smooth, resilient, and youthful.",
+benefits:[
+"Wrinkle Reduction:Actively smooths the appearance of deep lines and crow's feet.",
+"Improved Elasticity: Peptides support natural collagen production to firm and lift sagging skin.",
+"Skin Resurfacing:Refines uneven texture and fades the look of age spots and hyperpigmentation.",
+"Plumping Effect:Hyaluronic Acid draws moisture into the skin for an immediate supple finish."
+],
+usage:[
+"1. Cleanse: Start with a thoroughly cleansed and dry face.",
+"2. Apply: Use the dropper to apply 2–3 drops to your fingertips.",
+"3. Smooth: Gently pat onto the face and neck, avoiding the sensitive eye area.",
+"4. Frequency: For new users, apply 2 times a week at night, gradually increasing frequency as your skin builds tolerance.",
+"5. Protection: Retinol increases sun sensitivity; always apply a broad-spectrum SPF the following morning"
+]
+},
+
+6:{
+category:"EXFOLATING SERUM",
+name:"2% AHA 2% BHA Serum",
+tagline:"Gentle exfoliation for smoother skin",
+price:"₹657",
+images:["serum6.jpg"],
+reasons:[
+"Dual-Action Exfoliation: Combines Glycolic Acid (AHA) and Salicylic Acid (BHA) to resurface both the skin's surface and deep within the pores.",
+"Texture Refinement: Specifically engineered to smooth out rough patches and minimize the appearance of fine lines.",
+"Botanical Infusion: Formulated with natural extracts to soothe the skin and reduce the potential for irritation during resurfacing.",
+"Radiance Boosting: Effectively removes the buildup of dead skin cells to reveal a brighter, more youthful complexion."
+],
+description:"The Dermalyx 2% AHA 2% BHA Exfoliating Serum is a high-performance Exfoliating + Resurfacing treatment designed for a complete skin overhaul. By leveraging 2% Glycolic Acid to dissolve surface dullness and 2% Salicylic Acid to clear congested pores, this serum provides a professional-level peel experience at home. Balanced with botanical extracts, it ensures that your skin transition is smooth, leaving your face feeling exceptionally soft, clear, and glowing.",
+benefits:[
+"Deep Pore Cleansing: BHAs penetrate oily buildup to dissolve blackheads and prevent future congestion.",
+"Visible Clarity: AHAs target surface imperfections, helping to fade the appearance of dark spots and sun damage.",
+"Improved Absorption: By removing the dead cell barrier, it allows your moisturizers and oils to penetrate more effectively.",
+"Pore Minimization: Consistent use helps to tighten and refine the look of enlarged pores for a glass-skin finish.",
+],
+usage:[
+"1. Prep: Apply to a clean, dry face, ideally during your evening routine.",
+"2. Apply: Use the dropper to apply 3–4 drops directly to the face or fingertips.",
+"3. Smooth: Gently pat into the skin, avoiding the delicate eye and lip areas.",
+"4. Wait: Allow the serum to fully absorb for 2–3 minutes before applying your moisturizer.",
+"5. Sun Protection: Because this product contains AHAs, it is essential to use a broad-spectrum SPF during the day."
+]
+}
+};
+
+/* LOAD PRODUCT */
+const params=new URLSearchParams(window.location.search);
+const id=params.get("id");
+const product=products[id];
+
+if(product){
+document.getElementById("category").innerText=product.category;
+document.getElementById("productName").innerText=product.name;
+document.getElementById("tagline").innerText=product.tagline;
+document.getElementById("productPrice").innerText=product.price;
+document.getElementById("mainImage").src=product.images[0];
+
+const thumbContainer=document.getElementById("thumbnails");
+product.images.forEach(img=>{
+let image=document.createElement("img");
+image.src=img;
+image.onclick=()=>document.getElementById("mainImage").src=img;
+thumbContainer.appendChild(image);
+});
+
+const reasonsList=document.getElementById("reasonsList");
+product.reasons.forEach(reason=>{
+let li=document.createElement("li");
+li.innerText=reason;
+reasonsList.appendChild(li);
+});
+
+const accordion=document.getElementById("accordionSection");
+const sections=[
+{title:"DESCRIPTION",content:product.description},
+{title:"BENEFITS",content:product.benefits},
+{title:"HOW TO USE",content:product.usage}
+];
+
+sections.forEach(sec=>{
+let item=document.createElement("div");
+item.className="accordion-item";
+item.innerHTML=`
+<div class="accordion-header">${sec.title} <span>+</span></div>
+<div class="accordion-content">${sec.content}</div>
+`;
+accordion.appendChild(item);
+});
+}
+
+/* Quantity */
+let quantity=1;
+function increase(){quantity++;document.getElementById("qty").innerText=quantity;}
+function decrease(){if(quantity>1){quantity--;document.getElementById("qty").innerText=quantity;}}
+
+/* Accordion */
+document.addEventListener("click",function(e){
+if(e.target.classList.contains("accordion-header")){
+let content=e.target.nextElementSibling;
+content.style.display=content.style.display==="block"?"none":"block";
+}
+});
+
+function addToCart() {
+    if (!product) return;
+
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+
+    let currentQty = parseInt(document.getElementById("qty").innerText);
+
+    // Check existing item
+    let existingItem = cart.find(item => item.id == id);
+
+    if (existingItem) {
+        existingItem.quantity += currentQty;
+    } else {
+        let numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''));
+
+        cart.push({
+            id: id,
+            name: product.name,
+            price: numericPrice,
+            img: product.images[0],
+            quantity: currentQty
+        });
+    }
+
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+
+    alert(product.name + " (" + currentQty + ") added to cart successfully 🛒");
+}
+</script>
+</body>
+</html>

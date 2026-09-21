@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx | Facewash Details</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f6f6f6;color:#222;}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo{font-size:22px;font-weight:bold;letter-spacing:2px;}
+
+.product-container{
+display:flex;
+gap:60px;
+padding:60px;
+align-items:flex-start;
+}
+
+/* IMAGE */
+.image-section{flex:1;}
+.main-img{
+width:100%;
+max-width:450px;
+border-radius:10px;
+}
+.thumbnail-container{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+.thumbnail-container img{
+width:70px;
+height:70px;
+object-fit:cover;
+cursor:pointer;
+border-radius:6px;
+border:2px solid transparent;
+}
+.thumbnail-container img:hover{
+border:2px solid black;
+}
+
+/* INFO */
+.info-section{flex:1;}
+.category{
+font-size:12px;
+letter-spacing:2px;
+color:#777;
+margin-bottom:10px;
+}
+h1{font-size:32px;margin-bottom:10px;}
+.price{font-size:24px;font-weight:bold;margin:10px 0;}
+.tagline{color:#666;margin-bottom:10px;}
+.rating{color:#ff9900;margin-bottom:15px;}
+
+.quantity{
+display:flex;
+gap:15px;
+align-items:center;
+margin-bottom:20px;
+}
+.quantity button{
+width:35px;height:35px;border:none;background:#ddd;font-size:18px;cursor:pointer;
+}
+
+.add-btn{
+width:100%;
+padding:15px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+/* REASONS */
+.reasons ul{padding-left:18px;margin:10px 0;}
+.reasons li{margin-bottom:8px;color:#555;}
+
+/* ACCORDION */
+.accordion-item{border-top:1px solid #ddd;}
+.accordion-header{
+padding:15px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+}
+.accordion-content{
+display:none;
+padding:15px;
+color:#555;
+}
+
+@media(max-width:900px){
+.product-container{flex-direction:column;padding:30px;}
+.main-img{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo">DERMALYX</div>
+</header>
+
+<section class="product-container">
+
+<div class="image-section">
+<img id="mainImage" class="main-img">
+<div class="thumbnail-container" id="thumbnails"></div>
+</div>
+
+<div class="info-section">
+<div class="category" id="category"></div>
+<h1 id="productName"></h1>
+<div class="tagline" id="tagline"></div>
+<div class="price" id="productPrice"></div>
+<div class="rating">★★★★★ 4.9 (88 Reviews)</div>
+
+<div class="quantity">
+<button onclick="decrease()">-</button>
+<span id="qty">1</span>
+<button onclick="increase()">+</button>
+</div>
+
+<button class="add-btn" onclick="addToCart()">ADD TO CART</button>
+
+<div class="reasons">
+<h3>REASONS TO LOVE:</h3>
+<ul id="reasonsList"></ul>
+</div>
+
+<div class="accordion" id="accordionSection"></div>
+</div>
+</section>
+
+<script>
+
+/* PRODUCT DATABASE */
+const products = {
+
+1:{
+category:"  VITAMIN C FACEWASH",
+name:"Vitamin C Face Wash",
+tagline:"Boost glow & reduce dark spots",
+price:"₹620",
+images:["facewash1.jpg"],
+reasons:[
+"1.Brighter Complexion:* Formulated to effectively target dullness and uneven skin tone, revealing a radiant and glowing face.",
+"2.Antioxidant Powerhouse:* Combines Vitamin C and Vitamin E to neutralize free radicals and protect skin from environmental damage.",
+"3.Refined Texture:* Infused with Grapefruit Extract to gently exfoliate and smooth the skin's surface.",
+"4.Moisture Balance:* Effectively cleanses while maintaining essential hydration, ensuring skin feels soft and supple."
+],
+description:"The Dermalyx Vitamin C + E Face Wash is a revitalizing and brightening cleanser designed to unlock your skin's natural glow. This potent formula leverages the combined strength of Vitamin C and Vitamin E to fight dullness and provide robust antioxidant protection. Augmented with Niacinamide and Grapefruit Extract, it gently purifies, evens out skin tone, and refines texture. Its refreshing formula transforms your daily cleansing into a restorative ritual, leaving your face feeling luminous and energized.",
+benefits:[
+"Radiant Glow: Visibly brightens the skin and reduces the appearance of dark spots and discoloration.",
+"Environmental Shield: Forms a protective barrier against pollution and UV-induced oxidative stress.",
+"Pore Clarification: Deeply cleanses pores of impurities and excess oil without stripping the skin.",
+"Even Skin Tone: Helps to correct uneven tone for a more uniform and clear complexion."
+],
+usage:[
+"Dampen: Wet your face and neck with lukewarm water.",
+"Dispense: Squeeze a pea-sized amount of the face wash onto your wet palms.",
+"Lather: Create a rich lather and apply to your face.",
+"Massage: Gently massage using circular motions for 30–60 seconds, avoiding the eye area.",
+"Rinse: Rinse thoroughly and pat dry. For enhanced results, use every morning and evening."
+],
+},
+
+2:{
+category:"RICE WATER FACEWASH",
+name:"Rice Water Face Wash",
+tagline:"Deep hydration boost",
+price:"₹395",
+images:["facewash2.jpg"],
+reasons:[
+"1.Traditional Brightening: Harnesses the power of Rice Ferment Filtrate, a time-tested ingredient for achieving a porcelain-smooth finish.",
+"2.Pore Perfection: Infused with Niacinamide to visibly reduce the appearance of enlarged pores and uneven skin texture.",
+"3.Milky Gentle Cleanse: Provides a soft, creamy lather that effectively removes impurities without stripping the skin's moisture.",
+"4.Universal Balancing: Expertly formulated to suit all skin types, from sensitive to oily, ensuring a healthy skin barrier."
+],
+description:"The Dermalyx Rice Water + Niacinamide Face Wash is a brightening and smoothing cleanser inspired by ancient beauty rituals and enhanced by modern science. This formula features Rice Ferment Filtrate to deeply nourish and soften the skin, while Niacinamide works to strengthen the skin's natural defense and improve clarity. Its gentle, milky texture transforms your daily cleansing routine into a calming, restorative experience that leaves your face feeling luminous and refreshed.",
+benefits:[
+"Luminous Glow: Gently fades the look of dark spots and dullness to reveal a more radiant complexion.",
+"Smooth Texture: Helps to smooth out rough patches and fine lines for a velvety-soft feel.",
+"Barrier Support: Niacinamide helps to increase the production of ceramides, keeping your skin resilient and hydrated.",
+"Deep Hydration: Ensures your skin remains supple and bouncy even after a thorough cleanse."
+],
+usage:[
+"Squeeze: Dispense a pea-sized amount of the face wash onto your wet palms.",
+"Lather: Rub your hands together to create a smooth, milky lather.",
+"Massage: Gently massage onto your damp face using upward circular motions for about 60 seconds.",
+"Rinse: Thoroughly wash away with lukewarm water and pat dry.",
+"Routine: For best results, use every morning and evening as the first step in your brightening routine."
+],
+},
+
+3:{
+category:"DE TAN FACEWASH",
+name:"De Tan Face Wash",
+tagline:"Deep hydration boost",
+price:"₹499",
+images:["facewash3.jpg"],
+reasons:[
+"1.Natural Brightening: Harnesses the power of Saffron Extract, a legendary ingredient for achieving a radiant, golden glow.",
+"2.Sun Damage Recovery: Specifically formulated to effectively remove tanning and restore your skin’s natural tone.",
+"3.Even Complexion: Infused with Turmeric to target pigmentation and help achieve an even-toned finish.",
+"4.Smooth & Refined: Contains Niacinamide to improve skin texture and reduce the appearance of fine lines."
+],
+description:"The Dermalyx De-Tan Saffron Face Wash is a specialized brightening formula designed to revitalize skin dulled by sun exposure and environmental stress. By combining the antioxidant richness of Saffron with the healing properties of Turmeric and the refining power of Niacinamide, this face wash provides a deep yet gentle cleanse. It works to lift away impurities while actively lightening tans, leaving your skin looking luminous, fresh, and deeply nourished.",
+
+benefits:[
+"Effective De-Tanning: Actively reduces the appearance of sun-induced tanning and dark spots with regular use.",
+"Instant Radiance: Provides an immediate brightening effect, giving the face a refreshed and youthful glow.",
+"Anti-Inflammatory Support: Turmeric helps soothe the skin and reduce redness caused by UV exposure.",
+"Hydrating Cleanse: Carefully balanced to ensure your skin feels soft and supple rather than dry and tight after washing."
+],
+usage:[
+"Dampen: Wet your face and neck with lukewarm water to prepare the skin.",
+"Dispense: Squeeze a small amount of the Saffron face wash onto your wet palms.",
+"Massage: Apply to the face in gentle, upward circular motions, paying extra attention to tanned areas.",
+"Rinse: Thoroughly rinse with water and pat dry with a clean, soft towel.",
+"Routine: Use twice daily—morning and evening—to maintain a bright and even complexion."
+],
+},
+
+4:{
+category:"CHARCOAL FACEWASH",
+name:"Charcoal Face Wash",
+tagline:"Deep cleansing & detoxification",
+price:"₹379",
+images:["facewash4.jpg"],
+reasons:[
+"1.Detoxifying Magnet: Actively draws out bacteria, poisons, chemicals, and micro-particles to the surface of the skin.",
+"2.Deep Pore Cleansing: Penetrates deep into the pores to remove deep-seated debris that standard cleansers leave behind.",
+"3.Oil Control: Specifically formulated with activated charcoal to absorb excess sebum and maintain a matte finish.",
+"4.Acne Defense: Infused with Tea Tree Acid to provide a gentle antibacterial layer of protection against future breakouts."
+],
+description:"The Dermalyx Charcoal Face Wash is a high-performance Detoxifying + Pore Minimizing formula crafted for deep skin purification. By leveraging the natural adsorption power of Activated Charcoal alongside the clarifying properties of Tea Tree Acid, this face wash effectively vacuums impurities from your pores. It leaves your skin feeling exceptionally clean, refined, and perfectly balanced, making it an essential tool for those battling urban pollution and excess oil.",
+benefits:[
+"Instant Clarification: Noticeably reduces the appearance of blackheads and whiteheads by keeping pores clear.",
+"Skin Smoothing: Helps to refine uneven skin texture for a smoother, more polished look.",
+"Pollution Protection: Effectively washes away microscopic environmental pollutants that can lead to skin aging.",
+"Balanced Refreshment: Provides an intense clean that revitalizes the skin without leaving it feeling tight or stripped."
+],
+usage:[
+"Prepare: Splash your face with lukewarm water to help open the pores.",
+"Dispense: Squeeze a small amount of the Charcoal Face Wash into your wet palms.",
+"Targeted Massage: Work into a rich lather and massage onto the face, focusing on the T-zone and areas with visible pores.",
+"Deep Rinse: Rinse thoroughly with cool water to ensure all charcoal particles are washed away and pores are closed.",
+"Routine: Ideal for use in the evening to remove the day's environmental buildup, or twice daily for very oily skin types."
+],
+},
+
+5:{
+category:"WATERMELON FACEWASH",
+name:"Watermelon Face Wash",
+tagline:"Deep hydration boost",
+price:"₹399",
+images:["facewash5.jpg"],
+reasons:[
+"1.Refreshing Hydration: Infused with Watermelon Extract to provide an immediate burst of moisture and vitamins.",
+"2.Intensive Moisture Lock: Utilizes Hyaluronic Acid to ensure your skin stays plump and hydrated throughout the day.",
+"3.Soothing Relief: Contains Cucumber Extract to calm inflammation and reduce puffiness.",
+"4.Lightweight Texture: A non-greasy gel formula that leaves skin feeling crisp and revitalized."
+],
+description:"The Dermalyx Watermelon Cooling Gel Face Wash* is the ultimate Soothing + Hydrating solution for a tired or thirsty complexion. This vibrant gel cleanser combines the antioxidant power of Watermelon with the deep hydration of Hyaluronic Acid and the cooling touch of Cucumber. It gently removes impurities and excess oil while drenching your skin in essential moisture, making it the perfect start to a refreshing skincare routine.",
+benefits:[
+"Instant Cooling: Provides a chilled sensation upon application, perfect for soothing skin after sun exposure.",
+"Vitamin Boost: Rich in Vitamins A, C, and B6 to help brighten and protect the skin.",
+"Dewy Finish: Leaves the skin with a healthy, glass-skin glow without any heavy residue.",
+"Gentle Purification: Cleanses pores deeply while maintaining the skin's natural pH balance."
+],
+usage:["Prep: Splash your face with cool water.",
+"Dispense: Squeeze a small amount of the cooling gel onto your fingertips.",
+"Lather: Gently work into a light, bubbly lather.",
+"Massage: Apply to the face in circular motions, enjoying the refreshing scent and cooling feel.",
+"Rinse: Rinse thoroughly and pat dry to reveal a fresh, hydrated glow."
+],
+},
+
+6:{
+category:"ALOVERA GEL FACEWASH",
+name:"Alovera Gel Face Wash",
+tagline:"Deep hydration boost",
+price:"₹599",
+images:["facewash6.jpg"],
+reasons:[
+"1.Instant Hydration:* Infused with Hyaluronic Acid to lock in moisture and keep skin plump.",
+"2.Calming Formula:* Features Aloe Vera and Cucumber Extract to immediately soothe redness and irritation.",
+"3.Refreshing Gel Texture:* Provides a lightweight, cooling sensation that revitalizes tired skin.",
+"4.Pure & Gentle:* Specifically formulated to be mild enough for all skin types, including sensitive skin."
+],
+description:"The Dermalyx Alovera Gel Face Wash* is your go-to solution for a refreshed and balanced complexion. This Soothing + Hydrating formula combines the natural healing powers of Aloe Vera with the intensive moisture-binding capabilities of Hyaluronic Acid. Designed to wash away daily impurities while respecting the skin's natural moisture barrier, it leaves your face feeling incredibly clean, calm, and deeply hydrated without any sticky residue.",
+benefits:[
+"Moisture Surge: Provides a continuous burst of hydration that lasts long after the initial wash.",
+"Soothing Relief: Watermelon and Cucumber extracts work together to cool and de-puff the skin.",
+"Barrier Protection: Helps to strengthen the skin's surface against environmental stressors and dehydration.",
+"Non-Stripping Cleanse: Effectively removes oil and grime while maintaining the skin's essential natural oils."
+],
+usage:[
+"Dampen: Wet your face and neck with cool or lukewarm water.",
+"Apply: Squeeze a small amount of the gel into your palms and work into a light lather.",
+"Massage: Gently massage the lather onto your skin in circular motions, focusing on dry or irritated areas.",
+"Rinse: Rinse thoroughly and pat dry with a clean towel.",
+"Routine: Use twice daily for a consistently hydrated and glowing appearance."
+],
+}
+};
+
+/* LOAD PRODUCT */
+const params=new URLSearchParams(window.location.search);
+const id=params.get("id");
+const product=products[id];
+
+if(product){
+document.getElementById("category").innerText=product.category;
+document.getElementById("productName").innerText=product.name;
+document.getElementById("tagline").innerText=product.tagline;
+document.getElementById("productPrice").innerText=product.price;
+document.getElementById("mainImage").src=product.images[0];
+
+const thumbContainer=document.getElementById("thumbnails");
+product.images.forEach(img=>{
+let image=document.createElement("img");
+image.src=img;
+image.onclick=()=>document.getElementById("mainImage").src=img;
+thumbContainer.appendChild(image);
+});
+
+const reasonsList=document.getElementById("reasonsList");
+product.reasons.forEach(reason=>{
+let li=document.createElement("li");
+li.innerText=reason;
+reasonsList.appendChild(li);
+});
+
+const accordion=document.getElementById("accordionSection");
+const sections=[
+{title:"DESCRIPTION",content:product.description},
+{title:"BENEFITS",content:product.benefits},
+{title:"HOW TO USE",content:product.usage}
+];
+
+sections.forEach(sec=>{
+let item=document.createElement("div");
+item.className="accordion-item";
+item.innerHTML=`
+<div class="accordion-header">${sec.title} <span>+</span></div>
+<div class="accordion-content">${sec.content}</div>
+`;
+accordion.appendChild(item);
+});
+}
+
+/* Quantity */
+let quantity=1;
+function increase(){quantity++;document.getElementById("qty").innerText=quantity;}
+function decrease(){if(quantity>1){quantity--;document.getElementById("qty").innerText=quantity;}}
+
+/* Accordion */
+document.addEventListener("click",function(e){
+if(e.target.classList.contains("accordion-header")){
+let content=e.target.nextElementSibling;
+content.style.display=content.style.display==="block"?"none":"block";
+}
+});
+
+function addToCart() {
+    if (!product) return;
+
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+    let currentQty = parseInt(document.getElementById("qty").innerText);
+
+    let productId = "facewash_" + id;
+
+    let existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity += currentQty;
+    } else {
+        let numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''));
+
+        cart.push({
+            id: productId,
+            name: product.name,
+            price: numericPrice,
+            img: product.images[0],
+            quantity: currentQty
+        });
+    }
+
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+    alert(product.name + " (" + currentQty + ") added to cart successfully 🛒");
+}
+</script>
+</body>
+</html>

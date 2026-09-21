@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx | Product Details</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f6f6f6;color:#222;}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo{font-size:22px;font-weight:bold;letter-spacing:2px;}
+
+.product-container{
+display:flex;
+gap:60px;
+padding:60px;
+align-items:flex-start;
+}
+
+/* IMAGE */
+.image-section{flex:1;}
+.main-img{
+width:100%;
+max-width:450px;
+border-radius:10px;
+}
+.thumbnail-container{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+.thumbnail-container img{
+width:70px;
+height:70px;
+object-fit:cover;
+cursor:pointer;
+border-radius:6px;
+border:2px solid transparent;
+}
+.thumbnail-container img:hover{
+border:2px solid black;
+}
+
+/* INFO */
+.info-section{flex:1;}
+.category{
+font-size:12px;
+letter-spacing:2px;
+color:#777;
+margin-bottom:10px;
+}
+h1{font-size:32px;margin-bottom:10px;}
+.price{font-size:24px;font-weight:bold;margin:10px 0;}
+.tagline{color:#666;margin-bottom:10px;}
+.rating{color:#ff9900;margin-bottom:15px;}
+
+.quantity{
+display:flex;
+gap:15px;
+align-items:center;
+margin-bottom:20px;
+}
+.quantity button{
+width:35px;height:35px;border:none;background:#ddd;font-size:18px;cursor:pointer;
+}
+
+.add-btn{
+width:100%;
+padding:15px;
+background:black;
+color:white;
+border:none;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+/* REASONS */
+.reasons ul{padding-left:18px;margin:10px 0;}
+.reasons li{margin-bottom:8px;color:#555;}
+
+/* ACCORDION */
+.accordion-item{border-top:1px solid #ddd;}
+.accordion-header{
+padding:15px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+}
+.accordion-content{
+display:none;
+padding:15px;
+color:#555;
+}
+
+@media(max-width:900px){
+.product-container{flex-direction:column;padding:30px;}
+.main-img{max-width:100%;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo">DERMALYX</div>
+</header>
+
+<section class="product-container">
+
+<div class="image-section">
+<img id="mainImage" class="main-img">
+<div class="thumbnail-container" id="thumbnails"></div>
+</div>
+
+<div class="info-section">
+
+<div class="category" id="category"></div>
+<h1 id="productName"></h1>
+<div class="tagline" id="tagline"></div>
+<div class="price" id="productPrice"></div>
+<div class="rating">★★★★★ 4.9 (44 Reviews)</div>
+
+<div class="quantity">
+<button onclick="decrease()">-</button>
+<span id="qty">1</span>
+<button onclick="increase()">+</button>
+</div>
+
+<button class="add-btn" onclick="addToCart()">ADD TO CART</button>
+
+<div class="reasons">
+<h3>REASONS TO CHOOSE:</h3>
+<ul id="reasonsList"></ul>
+</div>
+
+<div class="accordion" id="accordionSection"></div>
+
+</div>
+</section>
+
+<script>
+
+/* ===== PRODUCT DATABASE ===== */
+
+const products = {
+
+1:{
+category:"BOTANICAL SCRUB",
+name:"Coffee Scrub",
+tagline:"Glow naturally with coffee power",
+price:"₹299",
+images:["scrub1.jpg"],
+reasons:[
+"Removes dead skin cells",
+"Improves blood circulation",
+"Boosts natural glow",
+"Reduces tan effectively"
+],
+description:"A refreshing exfoliating scrub made with natural coffee that gently removes dead skin cells, dirt, and excess oil from the skin. It helps unclog pores, improve blood circulation, and reduce dullness. Regular use leaves the skin smooth, soft, refreshed, and naturally glowing..",
+benefits:"Coffee face scrub helps remove dead skin cells and deeply cleans pores by removing dirt and impurities. It helps reduce dullness and tan while improving blood circulation in the skin. Regular use makes the skin smooth, soft, and refreshed. It also helps control excess oil and gives the skin a natural, healthy glow.",
+usage:"First, wash your face with water and keep the skin slightly damp. Take a small amount of coffee face scrub and gently massage it on your face in circular motions for about 1–2 minutes, avoiding the eye area. After scrubbing, rinse your face thoroughly with water and pat dry with a soft towel. Use the scrub 2–3 times a week for smooth and glowing skin."
+},
+
+2:{
+category:"BRIGHTENING SCRUB",
+name:"Pearl Scrub",
+tagline:"Radiance in every use",
+price:"₹349",
+images:["scrub2.jpg"],
+reasons:[
+"Brightens skin tone",
+"Improves texture",
+"Enhances glow",
+"Gentle exfoliation"
+],
+description:"Pearl face scrub is a gentle exfoliating skincare product enriched with pearl extracts that helps remove dead skin cells, dirt, and impurities. It helps brighten the skin, improve texture, and give a natural glow. Regular use makes the skin smooth, soft, and radiant while keeping it fresh and healthy.",
+benefits:"Pearl face scrub gently removes dead skin cells, dirt, and impurities from the skin. It helps brighten the complexion and improve overall skin tone. Regular use makes the skin smooth, soft, and fresh while reducing dullness. It also improves skin texture and gives the skin a natural radiant glow, making it look healthy and refreshed.",
+usage:"First, wash your face with water and keep the skin slightly damp. Take a small amount of pearl face scrub and gently massage it on your face in circular motions for 1–2 minutes, avoiding the eye area. After scrubbing, rinse thoroughly with water and pat dry with a soft towel. Use the scrub 2–3 times a week for brighter and smoother skin."
+},
+
+3:{
+category:"DE-TAN SCRUB",
+name:"De-Tan Scrub",
+tagline:"Remove tan instantly",
+price:"₹279",
+images:["scrub3.jpg"],
+reasons:[
+"Removes sun tan",
+"Refreshes skin",
+"Hydrates deeply",
+"Safe for all skin types"
+],
+description:"De-Tan face scrub is a deep-cleansing exfoliating product that helps remove tan, dead skin cells, and impurities from the skin. It gently exfoliates the skin, clears clogged pores, and helps restore the skin’s natural brightness. Regular use makes the skin smoother, clearer, and refreshed while giving a healthy, even-looking glow",
+benefits:"De-Tan face scrub helps remove tan, dirt, and dead skin cells from the skin. It deeply cleans pores and reduces dullness caused by sun exposure. Regular use helps brighten the skin, improve skin texture, and make the skin smooth and fresh. It also helps restore the skin’s natural glow and gives a clearer, more even-looking complexion.",
+usage:"First, rinse your face with water and keep the skin slightly damp. Take a small amount of De-Tan face scrub and gently massage it on your face in circular motions for 1–2 minutes, avoiding the eye area. Rinse thoroughly with water and pat your face dry with a soft towel. Use 2–3 times a week for best results and brighter-looking skin."
+},
+
+4:{
+category:"KOREAN GLASS SKIN SCRUB",
+name:"Korean Glass Skin Scrub",
+tagline:"Your Path to Glass Skin",
+price:"₹279",
+images:["scrub4.jpg"],
+reasons:[
+"Brightens skin tone",
+"Gently exfoliates dead skin",
+"Improves skin smoothness",
+"Gives glass-like natural glow",
+"Hydrates and refreshes skin",
+"Safe for all skin types"
+],
+description:"Korean Glass Skin Scrub is a gentle exfoliating scrub designed to give the skin a smooth, clear, and radiant glass-like glow. It helps remove dead skin cells, dirt, and excess oil while improving skin texture and brightness. Regular use leaves the skin soft, hydrated, and naturally glowing, giving a healthy and refreshed appearance.",
+benefits:"Korean Glass Skin Scrub gently exfoliates the skin and removes dead skin cells, dirt, and excess oil. It helps brighten the complexion and improve skin texture, making the skin smoother and softer. The scrub also helps hydrate and refresh the skin, giving it a clear, radiant, and glass-like natural glow with regular use",
+usage:"First, wash your face with water and keep the skin slightly damp. Take a small amount of Korean Glass Skin Scrub and gently massage it on your face in circular motions for 1–2 minutes, avoiding the eye area. Rinse thoroughly with water and pat your face dry with a soft towel. Use 2–3 times a week for smooth, clear, and glowing skin."
+},
+
+5:{
+category:"CHARCOAL SCRUB",
+name:"Charcoal Scrub",
+tagline:"Deep Cleanse & Exfoliate",
+price:"₹279",
+images:["scrub5.jpg"],
+reasons:[
+"Deeply cleanses pores",
+"Removes impurities",
+"Exfoliates dead skin cells",
+"Controls excess oil",
+"Safe for all skin types"
+],
+description:"Charcoal Scrub is a powerful deep-cleansing exfoliating product that helps remove dirt, oil, and impurities from the skin. It gently exfoliates the skin, clears clogged pores, and helps restore the skin’s natural brightness.",
+benefits:"Charcoal Scrub effectively removes dirt and excess oil from the skin. It helps unclog pores and reduce the appearance of blackheads. Regular use leaves the skin clean, smooth, and refreshed.",
+usage:"First, rinse your face with water and keep the skin slightly damp. Take a small amount of Charcoal Scrub and gently massage it on your face in circular motions for 1–2 minutes, avoiding the eye area. Rinse thoroughly with water and pat your face dry with a soft towel. Use 2–3 times a week for best results."
+},
+
+6:{
+category:"VITAMIN C SCRUB",
+name:"Vitamin C Scrub",
+tagline:"Smooth. Clear. Radiant",
+price:"₹279",
+images:["scrub6.jpg"],
+reasons:[
+"Brightens skin tone",
+"Removes dullness",
+"Boosts natural glow",
+"Deeply cleans pores",
+"Improves skin texture",
+"Safe for all skin types"
+],
+description:"Vitamin C Face Scrub is a brightening exfoliating scrub that helps remove dead skin cells, dirt, and excess oil from the skin. It helps reduce dullness and improves skin brightness while supporting an even skin tone. Regular use leaves the skin smooth, refreshed, and naturally glowing",
+benefits:"Vitamin C Face Scrub helps remove dead skin cells, dirt, and excess oil from the skin, keeping pores clean and fresh. It helps brighten the complexion and reduce dullness while improving overall skin tone. Regular use makes the skin smoother, softer, and more radiant, while supporting a healthy and natural glow.",
+usage:"First, rinse your face with water and keep the skin slightly damp. Take a small amount of Vitamin C Face Scrub and gently massage it on your face in circular motions for 1–2 minutes, avoiding the eye area. Rinse thoroughly with water and pat dry with a soft towel. Use 2–3 times a week for brighter and smoother skin."
+},
+};
+
+/* ===== LOAD PRODUCT ===== */
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const product = products[id];
+
+if(product){
+
+document.getElementById("category").innerText = product.category;
+document.getElementById("productName").innerText = product.name;
+document.getElementById("tagline").innerText = product.tagline;
+document.getElementById("productPrice").innerText = product.price;
+document.getElementById("mainImage").src = product.images[0];
+
+/* Thumbnails */
+const thumbContainer = document.getElementById("thumbnails");
+product.images.forEach(img=>{
+let image = document.createElement("img");
+image.src = img;
+image.onclick = ()=> document.getElementById("mainImage").src = img;
+thumbContainer.appendChild(image);
+});
+
+/* Reasons */
+const reasonsList = document.getElementById("reasonsList");
+product.reasons.forEach(reason=>{
+let li=document.createElement("li");
+li.innerText=reason;
+reasonsList.appendChild(li);
+});
+
+/* Accordion */
+const accordion = document.getElementById("accordionSection");
+
+const sections = [
+{title:"DESCRIPTION",content:product.description},
+{title:"BENEFITS",content:product.benefits},
+{title:"HOW TO USE",content:product.usage}
+];
+
+sections.forEach(sec=>{
+let item=document.createElement("div");
+item.className="accordion-item";
+item.innerHTML=`
+<div class="accordion-header">${sec.title} <span>+</span></div>
+<div class="accordion-content">${sec.content}</div>
+`;
+accordion.appendChild(item);
+});
+
+}
+
+/* Quantity */
+let quantity=1;
+function increase(){quantity++;document.getElementById("qty").innerText=quantity;}
+function decrease(){if(quantity>1){quantity--;document.getElementById("qty").innerText=quantity;}}
+
+/* Accordion Toggle */
+document.addEventListener("click",function(e){
+if(e.target.classList.contains("accordion-header")){
+let content=e.target.nextElementSibling;
+content.style.display = content.style.display==="block"?"none":"block";
+}
+});
+
+/* Cart */
+/* Cart Logic Updated for Backend Simulation */
+function addToCart() {
+    if(!product) return;
+
+    // Get current cart or empty array
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+    
+    // Get quantity from the screen
+    let currentQty = parseInt(document.getElementById("qty").innerText);
+
+    // Check if this product is already in cart
+    const existing = cart.find(item => item.id == id);
+
+    if (existing) {
+        existing.quantity += currentQty;
+    } else {
+        // Prepare product data (cleaning the price string to a number)
+        const numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''));
+        cart.push({
+            id: id,
+            name: product.name,
+            price: numericPrice,
+            img: product.images[0],
+            quantity: currentQty
+        });
+    }
+
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+    
+    // Visual feedback
+    alert(product.name + " (" + currentQty + ") added to cart successfully! 🛒");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermalyx | Sunscreen Details</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f6f6f6;}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+padding:15px 40px;
+background:white;
+}
+
+.logo{font-weight:bold;font-size:22px;}
+
+.container{
+display:flex;
+gap:60px;
+padding:60px;
+}
+
+/* IMAGE */
+.image-section{flex:1;}
+.main-img{
+width:100%;
+max-width:450px;
+border-radius:10px;
+}
+.thumbs{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+.thumbs img{
+width:70px;height:70px;
+object-fit:cover;
+cursor:pointer;
+border-radius:6px;
+}
+
+/* INFO */
+.info{flex:1;}
+.category{font-size:12px;color:#777;letter-spacing:2px;}
+h1{margin:10px 0;}
+.price{font-size:22px;font-weight:bold;margin:10px 0;}
+.rating{color:orange;margin-bottom:15px;}
+
+.quantity{display:flex;gap:15px;margin-bottom:20px;}
+.quantity button{
+width:35px;height:35px;border:none;background:#ddd;font-size:18px;cursor:pointer;
+}
+
+.add-btn{
+width:100%;
+padding:15px;
+background:black;
+color:white;
+border:none;
+margin-bottom:20px;
+}
+
+/* Accordion */
+.accordion-item{border-top:1px solid #ddd;}
+.accordion-header{
+padding:15px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+}
+.accordion-content{
+display:none;
+padding:15px;
+color:#555;
+}
+
+@media(max-width:900px){
+.container{flex-direction:column;padding:30px;}
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo">DERMALYX</div>
+</header>
+
+<section class="container">
+
+<div class="image-section">
+<img id="mainImg" class="main-img">
+<div class="thumbs" id="thumbContainer"></div>
+</div>
+
+<div class="info">
+<div class="category" id="category"></div>
+<h1 id="name"></h1>
+<div class="price" id="price"></div>
+<div class="rating">★★★★★ 4.8 (120 Reviews)</div>
+
+<div class="quantity">
+<button onclick="dec()">-</button>
+<span id="qty">1</span>
+<button onclick="inc()">+</button>
+</div>
+
+<button class="add-btn" onclick="addToCart()">ADD TO CART</button>
+
+<div id="accordion"></div>
+</div>
+
+</section>
+
+<script>
+const products={
+1:{
+category:"OUTDOOR SUNSCREEN",
+name:"SPF 30+ Outdoor Sunscreen",
+price:"₹399",
+images:["sunscreen7.jpg"],
+reason:[
+"Indoor & Office Protection: Specifically optimized for daily indoor use, providing a shield against indirect sunlight and UV rays through windows.",
+"Blue Light Defense: Helps safeguard your skin from the HEV (Blue Light) emitted by laptops, smartphones, and tablets—ideal for long work sessions.",
+"Ultra-Lightweight Formula: Designed to feel like a second skin; it's so breathable you'll forget you're wearing it.",
+"Hydrating Base: Acts as both a moisturizer and a protector, keeping your skin supple in air-conditioned environments."
+],
+description:"The *Dermalyx SPF 20 Daily Use Sunscreen* is your everyday essential for modern life. While we often think of sun protection for the outdoors, daily incidental exposure can also lead to premature aging. This refined, lightweight formula provides Daily Use protection that fits perfectly into your morning routine. Whether you're working in front of a screen or running errands, this sunscreen ensures your skin remains hydrated and defended against environmental stressors without any heavy or sticky feel.",
+benefits:[
+"* *Prevents Photo-Aging:* Targets the fine lines and dullness caused by everyday UV exposure.",
+"* *Screen Defense:* The antioxidant-rich formula helps combat the oxidative stress triggered by digital device usage.",
+"* *Perfect for Layering:* The non-greasy finish makes it an excellent primer for makeup or other skincare products.",
+"* *Gentle for All Skin Types:* Mild enough for daily application, even on sensitive or reactive skin."
+],
+usage:[
+"1. *Morning Step:* Apply as the final step in your morning skincare routine, after your moisturizer.",
+"2. *Even Distribution:* Use 1–2 pumps to cover the face, neck, and any other exposed areas.",
+"3. *Massage:* Gently massage until fully absorbed for a smooth, matte-satin finish.",
+"4. *Consistency:* Use every day, regardless of the weather, as UV rays can penetrate clouds and glass."
+]
+},
+2:{
+category:"TREKKING SUNSCREEN",
+name:"SPF 45 Trekking Sunscreen",
+price:"₹349",
+images:["sunscreen2.jpg"],
+reason:[
+"1. High-Altitude Protection: Specifically designed to shield against the more intense UV radiation found at higher elevations.",
+"2. Sweat-Resistant Formula: Built to withstand heavy physical activity, ensuring the formula doesn't run into your eyes during a climb.",
+"3. Environmental Barrier: Provides a protective layer against harsh winds and cold temperatures common in trekking environments.",
+"4. Long-Lasting Defense: A robust Broad Spectrum shield that offers extended protection for all-day outdoor adventures."
+],
+description:"The *Dermalyx SPF 45 Trekking Sunscreen* is engineered for the modern explorer. Whether you're navigating deep forests or scaling rocky peaks, this sunscreen provides high-performance protection that stays put. Its advanced formula is Broad Spectrum and highly durable, resisting sweat and environmental friction. It doesn't just block the sun; it helps prevent the windburn and dehydration that can plague skin in the great outdoors.",
+benefits:[
+"Targeted UV Defense: SPF 45 offers a significant increase in protection against UVB rays, perfect for long exposure.",
+"Non-Greasy Grip: Absorbs quickly into the skin so it won't interfere with your grip on trekking poles or climbing gear.",
+"Skin Fortification: Enriched with antioxidants to help the skin recover from oxidative stress caused by mountain sun and wind.",
+"Soothes & Hydrates: Prevents the skin from becoming parched and cracked under extreme weather conditions."
+],
+usage:[
+"Early Application: Apply a liberal amount to all exposed skin 20 minutes before starting your trek.",
+"Focus on Extremities: Pay close attention to the nose, ears, and neck, which are often the most exposed during a hike.",
+"Layering: If wearing a backpack, ensure you apply to the back of the neck and arms where straps might rub.",
+"Reapply: Reapply every 2 hours, or more frequently if you are sweating heavily or at very high altitudes."
+],
+},
+
+3:{
+category:"OAILY USE SUNSCREEN",
+name:"SPF 20 Daily Use Sunscreen",
+price:"₹449",
+images:["sunscreen3.jpg"],
+reason:["Indoor & Office Protection: Specifically optimized for daily indoor use, providing a shield against indirect sunlight and UV rays through windows.",
+"Blue Light Defense: Helps safeguard your skin from the HEV (Blue Light) emitted by laptops, smartphones, and tablets—ideal for long work sessions.",
+"Ultra-Lightweight Formula: Designed to feel like a second skin; it's so breathable you'll forget you're wearing it.",
+"Hydrating Base: Acts as both a moisturizer and a protector, keeping your skin supple in air-conditioned environments."
+],
+description:"The Dermalyx SPF 20 Daily Use Sunscreen* is your everyday essential for modern life. While we often think of sun protection for the outdoors, daily incidental exposure can also lead to premature aging. This refined, lightweight formula provides Daily Use protection that fits perfectly into your morning routine. Whether you're working in front of a screen or running errands, this sunscreen ensures your skin remains hydrated and defended against environmental stressors without any heavy or sticky feel.",
+benefits:[
+"Prevents Photo-Aging: Targets the fine lines and dullness caused by everyday UV exposure.",
+"Screen Defense: The antioxidant-rich formula helps combat the oxidative stress triggered by digital device usage.",
+"Perfect for Layering: The non-greasy finish makes it an excellent primer for makeup or other skincare products.",
+"Gentle for All Skin Types: Mild enough for daily application, even on sensitive or reactive skin."
+],
+usage:[
+"Morning Step: Apply as the final step in your morning skincare routine, after your moisturizer.",
+"Even Distribution: Use 1–2 pumps to cover the face, neck, and any other exposed areas.",
+"Massage: Gently massage until fully absorbed for a smooth, matte-satin finish.",
+"Consistency: Use every day, regardless of the weather, as UV rays can penetrate clouds and glass.",
+],
+},
+
+4:{
+category:"BEACH & WATER RESISTANT SUNSCREEN",
+name:"SPF 50+ Beach & Water Resistant Sunscreen",
+price:"₹449",
+images:["sunscreen4.jpg"],
+reason:[
+"Beach Protection: High SPF rating designed specifically for intense UV exposure in reflective beach environments.",
+"Water Resistance: Formulated to withstand saltwater and chlorine without compromising protection.",
+"Sand-Resistant: Quick-absorbing texture prevents sand from sticking to your skin.",
+"Hydrating Formula: Combats the dehydrating effects of sun, wind, and water exposure."
+],
+description:"The *Dermalyx SPF 50+ Beach & Water Resistant Sunscreen* is your ultimate guard for seaside adventures. This high-performance formula is built for durability, ensuring that sand, salt, and water don't compromise your sun safety. Its Broad Spectrum technology provides a robust barrier against the sun's most aggressive rays, while the lightweight texture ensures it won't feel heavy even in humid coastal climates.",
+benefits:[
+"Prevents Intense Sunburn: High SPF rating offers premium protection during extended periods of direct sun exposure.Moisture Retention: Formulated to combat the parching effects of sea breezes and heat, keeping skin hydrated.Sand-Friendly Finish: Absorbs quickly into the skin, making it less likely for sand to stick to your body.Soothing Care: Infused with botanical extracts to calm the skin and reduce heat-induced redness."
+],
+usage:[
+"Preparation: Apply a generous layer to all exposed areas 20 minutes before heading to the beach.Even Coverage: Be thorough with application on the shoulders, back, and the tops of your feet.Active Replay: Reapply every 80 minutes of swimming or immediately after towel drying.Complete Protection: Remember that UV rays reflect off sand and water; maintain coverage even when sitting under a beach umbrella."
+],
+},
+
+5:{
+category:"SPORTS SUNSCREEN",
+name:"SPF 25 Sports Sunscreen",
+price:"₹449",
+images:["sunscreen5.jpg"],
+reason :[  
+"**Active Sweat Resistance:** Formulated to stay on the skin during intense physical activity, ensuring your protection doesn't run even when you're at your peak.",
+"**Broad Spectrum UVA/UVB Defense:** Reliable protection against burning rays and deep skin damage, perfect for outdoor field sports.",
+"**Mineral-Based Protection:** Features Organic Zinc Oxide and Titanium Dioxide for a physical barrier that starts working the moment you apply it.",
+"**Breathable Formula:** Lightweight texture that won't clog pores or feel heavy while you move."
+],
+description:"The *Dermalyx SPF 25 Sports Sunscreen* is built for the athlete who never quits. Whether you're on the football field or the running track, this Water & Sweat Resistant formula provides a consistent shield against environmental stressors. Enriched with Aloe Vera and Vitamin E, it nourishes the skin while providing a robust defense system, allowing you to focus entirely on your game.",
+benefits:[
+"Eye-Safe Formula: Designed to stay in place so it won't sting your eyes during high-intensity sweat sessions.",
+"Natural Nourishment: Aloe Vera helps cool and soothe skin that is heating up during exercise.",
+"Antioxidant Boost: Vitamin E works to neutralize free radicals caused by sun exposure and physical exertion.",
+"Non-Slip Finish: Absorbs quickly to ensure a dry touch that won't interfere with your equipment or grip."
+],
+usage:[
+"1. Application: Apply a generous layer to all exposed skin 15 minutes before your workout or match begins.",
+"2. Target Areas: Pay special attention to the forehead, ears, and back of the neck.",
+"3. Active Replay: Reapply every 2 hours of active play, or more frequently if you are wiping sweat with a towel.",
+"4. Post-Game Care: After your session, wash off the sunscreen to let your skin breathe and recover."
+],
+},
+
+6:{
+category:"SWIMMING POOL SUNSCREEN",
+name:"SPF 35 Swimming Pool Sunscreen",
+price:"₹449",
+images:["sunscreen6.jpg"],
+reason:[
+"Water & Sweat Resistant: Specially engineered to stay effective while swimming, ensuring continuous protection in the pool.",
+"Broad Spectrum Shield: Provides high-level defense against both UVA and UVB rays to prevent sunburn and long-term skin damage.",
+"Chlorine Defense: Formulated to act as a barrier between your skin and harsh pool chemicals, reducing dryness and irritation.",
+"Lightweight & Non-Greasy: A fast-absorbing formula that won't leave a heavy residue or interfere with your swim gear."
+],
+
+
+description:"The *Dermalyx SPF 35 Swimming Pool Sunscreen* is your essential companion for aquatic activities. This advanced formula offers Broad Spectrum Protection with a focus on durability. Designed to be Water & Sweat Resistant, it clings to the skin even during active movement in the water. Whether you are training or relaxing poolside, this sunscreen ensures your skin remains hydrated and shielded from the sun's most intense rays.",
+benefits:[
+"UV Protection: Effectively blocks harmful rays to prevent immediate redness and deep-cell photo-aging.Hydration Balance: Contains moisture-locking ingredients to combat the dehydrating effects of sun and pool water.No White Cast: Blends seamlessly into all skin tones for a clear, natural finish.Skin Recovery: Infused with antioxidants to help soothe the skin after exposure to heat and environmental stressors.",
+],
+usage:[
+"Apply Early: Massage a generous amount into all exposed skin at least 15 minutes before entering the water.Don't Miss Spots: Ensure coverage on often-forgotten areas like the back of the neck, ears, and tops of feet.Reapply Regularly: For maximum safety, reapply every 80 minutes of swimming or immediately after towel drying.Post-Swim: Rinse skin with fresh water after swimming and reapply to maintain protection throughout the day.",
+],
+},
+};
+const id=new URLSearchParams(window.location.search).get("id");
+const product=products[id];
+
+if(product){
+document.getElementById("category").innerText=product.category;
+document.getElementById("name").innerText=product.name;
+document.getElementById("price").innerText=product.price;
+document.getElementById("mainImg").src=product.images[0];
+
+const thumb=document.getElementById("thumbContainer");
+product.images.forEach(img=>{
+let image=document.createElement("img");
+image.src=img;
+image.onclick=()=>document.getElementById("mainImg").src=img;
+thumb.appendChild(image);
+});
+
+const acc=document.getElementById("accordion");
+[
+{title:"DESCRIPTION",content:product.description},
+{title:"BENEFITS",content:product.benefits},
+{title:"HOW TO USE",content:product.usage}
+].forEach(sec=>{
+let div=document.createElement("div");
+div.className="accordion-item";
+div.innerHTML=`
+<div class="accordion-header">${sec.title} +</div>
+<div class="accordion-content">${sec.content}</div>
+`;
+acc.appendChild(div);
+});
+}
+
+/* Quantity */
+let quantity=1;
+function inc(){quantity++;document.getElementById("qty").innerText=quantity;}
+function dec(){if(quantity>1){quantity--;document.getElementById("qty").innerText=quantity;}}
+
+/* Accordion */
+document.addEventListener("click",e=>{
+if(e.target.classList.contains("accordion-header")){
+let content=e.target.nextElementSibling;
+content.style.display=content.style.display==="block"?"none":"block";
+}
+});
+
+function addToCart() {
+    if (!product) return;
+
+    let cart = JSON.parse(localStorage.getItem("dermalyx_cart")) || [];
+
+    let currentQty = parseInt(document.getElementById("qty").innerText);
+
+    // Check existing item
+    let existingItem = cart.find(item => item.id == id);
+
+    if (existingItem) {
+        existingItem.quantity += currentQty;
+    } else {
+        let numericPrice = parseInt(product.price.replace(/[^0-9]/g, ''));
+
+        cart.push({
+            id: id,
+            name: product.name,
+            price: numericPrice,
+            img: product.images[0],
+            quantity: currentQty
+        });
+    }
+
+    localStorage.setItem("dermalyx_cart", JSON.stringify(cart));
+    alert(product.name + " added to cart! 🛒");
+}
+</script>
+
+</body>
+</html>
